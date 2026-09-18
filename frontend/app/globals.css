@@ -1,0 +1,73 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-brand-blue: #A05AFF;
+  --color-brand-green: #1BCFB4;
+  --color-brand-purple: #A05AFF;
+  --color-brand-teal: #1BCFB4;
+  --color-primary-purple: #A05AFF;
+  --color-primary-teal: #1BCFB4;
+  --color-support-cyan: #4BCBEB;
+  --color-support-coral: #FE9496;
+  --color-support-violet: #9E58FF;
+  --color-brand-dark: #1A1C1B;
+  --color-brand-cream: #FBF9F5;
+  --color-brand-cream-dark: #F4F1EA;
+  --color-brand-black: #1E201F;
+  --color-brand-green-light: rgba(27, 207, 180, 0.12);
+  --font-sans: var(--font-inter);
+  --font-serif: var(--font-fraunces);
+  --font-fraunces: var(--font-fraunces);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--color-brand-cream);
+  color: var(--color-brand-black);
+  font-family: var(--font-inter), system-ui, -apple-system, sans-serif;
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Subtle texts default to clean, highly legible Inter */
+body, .font-sans, .text-subtle, .text-kicker {
+  font-family: var(--font-inter), system-ui, -apple-system, sans-serif;
+}
+
+/* Major texts use refined editorial Fraunces serif */
+h1, h2, h3, h4, h5, h6, .font-serif, .font-fraunces, .text-major {
+  font-family: var(--font-fraunces), Georgia, serif;
+}
+
+/* Consistent typography weights */
+.text-kicker {
+  font-family: var(--font-inter), system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #71717a;
+}
+
+/* Smooth custom scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.12);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.22);
+}
