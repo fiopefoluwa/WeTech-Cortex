@@ -1,35 +1,33 @@
 # AgreementOS — Frontend Workspace
 
-> **The Operating System for Creator Partnerships & Commercial Rights**
+The web application for AgreementOS built with Next.js 16 (App Router, Turbopack), React 19, and Tailwind CSS.
 
 ---
 
-## 💡 What is AgreementOS?
+## About the Application
 
-**AgreementOS** is an intelligent collaboration platform designed to eliminate miscommunication, unpaid scope creep, and expired commercial usage in the creator economy.
+AgreementOS provides a collaborative deal room for commercial creator partnerships. It converts static contract terms into an active interface that allows brands and creators to review deliverables, monitor real-time conversation for scope changes, manage digital licensing windows, and approve milestone payouts.
 
-Instead of burying contract terms in static PDFs and negotiating revisions across fragmented DMs, AgreementOS provides a shared, active deal room where:
-- **Contracts are living entities**: Key terms (deliverables, exclusivity, revisions, licensing periods, payment terms) are extracted and displayed as active term cards.
-- **Scope is protected in real time**: An AI Scope Guardian audits communications as they happen, catching informal revision requests and suggesting fair market compensation.
-- **Commercial rights are tracked**: RightsGuard actively monitors asset licensing to prevent unauthorized usage past contractual end dates.
-- **Both perspectives are unified**: Features instant persona toggling between **Brand (`Northstar Coffee`)** and **Creator (`Amara Okafor`)** to experience workflows from both vantage points.
-
-Built with **Next.js 16 (Turbopack)**, **React 19**, and **Tailwind CSS**.
+Key capabilities include:
+- Structured contract term cards extracted from legal documents.
+- Real-time scope auditing using Gemini AI to identify uncontracted requests in chat.
+- RightsGuard commercial licensing tracker for digital asset usage and renewals.
+- Dual-persona simulation allowing instant switching between Brand (`Northstar Coffee`) and Creator (`Amara Okafor`) perspectives.
 
 ---
 
-## 🚀 Key Modules & Routing
+## Route Structure
 
-All deal room pages are nested under `/deals/[dealId]` and protected by `AuthGuard`:
+Protected routes are nested under `/deals/[dealId]` and guarded by `AuthGuard`:
 
 | Route | Purpose | Key Components |
 |---|---|---|
-| `/login` | Authentication & 1-Click Demo Login | Demo account selector, email/password form |
-| `/` | Root redirection | Directs authenticated users to `/deals/1`, otherwise to `/login` |
+| `/login` | Authentication & Demo Access | 1-click persona buttons, email/password fallback |
+| `/` | Session-aware redirect | Directs logged-in users to `/deals/1`, otherwise to `/login` |
 | `/deals/[dealId]` | Deal Overview | High-priority attention cards, milestone status, quick actions |
-| `/deals/[dealId]/agreement` | Agreement & Terms | Extracted term cards, revision history, evidence viewer |
-| `/deals/[dealId]/messages` | Communications & Scope Guardian | Chat thread, inline AI scope change detection, drawer modal |
-| `/deals/[dealId]/deliverables` | Deliverables Pipeline | Video submission, status badges, review & approval workflow |
+| `/deals/[dealId]/agreement` | Agreement & Terms | Extracted term cards, revision timeline, evidence viewer |
+| `/deals/[dealId]/messages` | Messages & Scope Guardian | Chat thread, inline AI scope change detection, drawer modal |
+| `/deals/[dealId]/deliverables` | Deliverables Pipeline | Video submission, status badges, review and approval flow |
 | `/deals/[dealId]/content` | Commercial Assets | Asset metadata, active licensing duration, usage breakdown |
 | `/deals/[dealId]/licensing` | RightsGuard Monitoring | Expired usage flags, interactive license extension modal |
 | `/deals/[dealId]/change-requests` | Scope Adjustments | Compensation requests, approval and payout workflows |
@@ -38,43 +36,41 @@ All deal room pages are nested under `/deals/[dealId]` and protected by `AuthGua
 
 ---
 
-## 🎨 Theme & Typography
+## Design System and Typography
 
-- **Headings**: `Fraunces` (`font-serif`) loaded via `@next/font/google`
-- **Body & Technical UI**: `Inter` (`font-sans`) loaded via `@next/font/google`
+- **Headings**: Fraunces (`font-serif`) loaded via `next/font/google`
+- **Body and Technical UI**: Inter (`font-sans`) loaded via `next/font/google`
 - **Background**: `#FBF9F5` (Brand Cream)
 - **Palette**:
   - Primary Purple: `#A05AFF`
-  - Secondary Mint: `#1BCFB4`
+  - Mint / Teal: `#1BCFB4`
   - Supporting Cyan: `#4BCBEB`
   - Warning Coral: `#FE9496`
   - Deep Violet: `#9E58FF`
 
 ---
 
-## 🔐 Session Management
+## Session and State Management
 
-Session state is handled centrally in `UserContext.tsx`:
-- **Hydration Safety**: Stored in `localStorage` (`agreementos_active_persona`).
-- **Zero-Flash AuthGuard**: Protected routes render a clean loader while hydrating, preventing unauthorized layout flashing.
-- **Dynamic Role Switching**: Real-time perspective toggling between:
-  - `brand` (`Northstar Coffee`)
-  - `creator` (`Amara Okafor`)
+Session state is managed globally through `UserContext.tsx`:
+- **Hydration Safety**: Persisted in `localStorage` under `agreementos_active_persona`.
+- **Zero-Flash AuthGuard**: Protected routes display a loading spinner until hydration resolves, preventing unauthorized layout flashing.
+- **Dynamic Perspective Switching**: Toggle between `brand` (`Northstar Coffee`) and `creator` (`Amara Okafor`) in real time.
 
 ---
 
-## ⚙️ Environment Variables
+## Environment Configuration
 
-Create a `.env.local` file in this directory to configure your API endpoint:
+Create a `.env.local` file in this directory to override default endpoints:
 
 ```env
-# Optional: defaults to https://coolpractical.onrender.com if not specified
+# Optional: defaults to https://coolpractical.onrender.com if omitted
 NEXT_PUBLIC_API_URL=https://coolpractical.onrender.com
 ```
 
 ---
 
-## 🛠️ Development & Production Commands
+## Development and Build Commands
 
 ```bash
 # Install dependencies
@@ -83,10 +79,10 @@ npm install
 # Start development server on port 3000
 npm run dev
 
-# Run ESLint validation
+# Run ESLint validation (enforces 0 errors and 0 warnings)
 npm run lint
 
-# Build production bundle
+# Compile production build
 npm run build
 
 # Start production server
