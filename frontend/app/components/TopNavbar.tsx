@@ -10,12 +10,11 @@ import {
   Building2,
   ChevronDown,
   Check,
-  RefreshCw,
   Menu,
 } from "lucide-react";
 import Link from "next/link";
 import CreateDealRoomModal from "./CreateDealRoomModal";
-import { useUser, DEMO_ACCOUNTS, type UserRole } from "@/app/context/UserContext";
+import { useUser, type UserRole } from "@/app/context/UserContext";
 
 export default function TopNavbar() {
   const {

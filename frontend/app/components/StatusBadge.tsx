@@ -1,4 +1,3 @@
-import { CheckCircle2 } from "lucide-react";
 
 interface StatusBadgeProps {
   label: string;

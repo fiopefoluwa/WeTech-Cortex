@@ -11,7 +11,6 @@ import {
   demoBrand,
   demoCreator,
   demoChatMessages,
-  agreementContextData,
 } from "@/app/lib/demo-data";
 import type { ChatMessage } from "@/app/lib/types";
 import {
@@ -19,9 +18,6 @@ import {
   Scale,
   Send,
   FileSearch,
-  MessageSquare,
-  AlertCircle,
-  RefreshCw,
 } from "lucide-react";
 
 export default function MessagesPage() {

@@ -1,13 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { X, Check, Clock, AlertTriangle, ArrowRight, FileCheck, PenLine } from "lucide-react";
+import { X, Check, Clock, AlertTriangle, PenLine } from "lucide-react";
 
 interface ReviewExtractionModalProps {
   dealId?: string;
   isOpen: boolean;
   onClose: () => void;
-  onTermsExtracted?: (terms: any) => void;
+  onTermsExtracted?: (terms: unknown) => void;
 }
 
 type ModalStep = "review" | "error" | "manual";

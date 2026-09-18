@@ -18,12 +18,11 @@ import {
   UploadCloud,
   Check,
   FileVideo,
-  Layers,
   Calendar,
 } from "lucide-react";
 
 export default function DeliverablesPage() {
-  const { role, user, switchRole, setNotification } = useUser();
+  const { role, switchRole, setNotification } = useUser();
   const [deliverables, setDeliverables] = useState<DeliverableItem[]>(demoDeliverables);
   const [selectedReference, setSelectedReference] = useState<DeliverableItem | null>(null);
 

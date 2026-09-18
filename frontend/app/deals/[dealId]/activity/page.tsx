@@ -8,7 +8,7 @@ import {
   demoCreator,
   demoActivityTimeline,
 } from "@/app/lib/demo-data";
-import { ChevronRight, Clock, History } from "lucide-react";
+import { ChevronRight, History } from "lucide-react";
 
 export default function ActivityPage() {
   const [isEmptyState, setIsEmptyState] = useState(false);

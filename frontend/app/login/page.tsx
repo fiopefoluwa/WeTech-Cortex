@@ -17,7 +17,7 @@ import { useUser, DEMO_ACCOUNTS, type UserRole } from "@/app/context/UserContext
 
 export default function LoginPage() {
   const router = useRouter();
-  const { user, login, backendStatus, isHydrated, isLoggedIn } = useUser();
+  const { login, isHydrated, isLoggedIn } = useUser();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -64,69 +64,37 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen bg-[#FBF9F5] text-zinc-900 flex flex-col justify-between py-8 px-4 sm:px-6 lg:px-8">
-      {/* Top Brand Bar */}
-      {/* <div className="max-w-4xl w-full mx-auto flex items-center justify-between">
-        <Link
-          href="/deals/1"
-          className="flex items-center gap-2.5 group transition-opacity hover:opacity-85"
-        >
-          <div className="w-8 h-8 rounded-lg flex items-center justify-center">
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              className="text-[#1BCFB4]"
-            >
-              <path d="M12 2L2 7l10 5 10-5-10-5z" />
-              <path d="M2 17l10 5 10-5" />
-              <path d="M2 12l10 5 10-5" />
-            </svg>
-          </div>
-          <div>
-            <h1 className="text-[16px] font-bold tracking-tight text-zinc-900 font-serif">
-              AgreementOS
-            </h1>
-          </div>
-        </Link>
-
-      
-        
-      </div> */}
-
       {/* Main Content Area */}
-      <div className="max-w-4xl w-full mx-auto my-8">
-        <div className="text-center max-w-xl mx-auto mb-10">
-          <div className="max-w-4xl w-full mx-auto flex items-center justify-center">
-        <Link
-          href="/deals/1"
-          className="flex items-center gap-2.5 group transition-opacity hover:opacity-85"
-        >
-          <div className="w-8 h-8 rounded-lg flex items-center justify-center">
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              className="text-[#1BCFB4]"
+      <div className="max-w-4xl w-full mx-auto my-auto">
+        <div className="text-center max-w-xl mx-auto mb-8">
+          <div className="flex items-center justify-center mb-4">
+            <Link
+              href="/deals/1"
+              className="inline-flex items-center gap-2.5 group transition-opacity hover:opacity-85"
             >
-              <path d="M12 2L2 7l10 5 10-5-10-5z" />
-              <path d="M2 17l10 5 10-5" />
-              <path d="M2 12l10 5 10-5" />
-            </svg>
+              <div className="w-8 h-8 rounded-lg flex items-center justify-center">
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  className="text-[#1BCFB4]"
+                >
+                  <path d="M12 2L2 7l10 5 10-5-10-5z" />
+                  <path d="M2 17l10 5 10-5" />
+                  <path d="M2 12l10 5 10-5" />
+                </svg>
+              </div>
+              <div>
+                <span className="text-[16px] font-bold tracking-tight text-zinc-900 font-serif block">
+                  AgreementOS
+                </span>
+              </div>
+            </Link>
           </div>
-          <div>
-            <h1 className="text-[16px] font-bold tracking-tight text-zinc-900 font-serif">
-              AgreementOS
-            </h1>
-          </div>
-        </Link>
-      </div>
-          <h1 className="font-serif text-[32px] sm:text-[38px] font-bold text-zinc-900 leading-tight mb-2 tracking-[-0.02em]">
+          <h1 className="font-serif text-[30px] sm:text-[36px] font-bold text-zinc-900 leading-tight mb-2 tracking-[-0.02em]">
             Sign in to your deal room
           </h1>
           <p className="text-xs sm:text-sm text-zinc-500 font-normal leading-relaxed">
@@ -141,8 +109,6 @@ export default function LoginPage() {
           <div className="flex items-center justify-between mb-3 px-1">
             <span className="text-[10px] font-semibold tracking-wider text-zinc-400 uppercase font-sans">
               1-Click Demo Accounts
-            </span>
-            <span className="text-[11px] font-medium text-[#A05AFF] flex items-center gap-1">
             </span>
           </div>
 
@@ -316,7 +282,6 @@ export default function LoginPage() {
               className="w-full py-2.5 rounded-xl bg-zinc-900 text-white text-xs font-medium hover:bg-zinc-800 transition-colors cursor-pointer flex items-center justify-center gap-2 shadow-xs disabled:opacity-60"
             >
               <span>{loading ? "Signing in..." : "Continue to Workspace"}</span>
-             
             </button>
           </form>
         </div>

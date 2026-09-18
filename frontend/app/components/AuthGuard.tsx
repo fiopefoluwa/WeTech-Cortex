@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef } from "react";
 import { useUser } from "@/app/context/UserContext";
 
 /**
@@ -10,15 +10,15 @@ import { useUser } from "@/app/context/UserContext";
  */
 export default function AuthGuard({ children }: { children: React.ReactNode }) {
   const { isLoggedIn, isHydrated } = useUser();
-  const [isRedirecting, setIsRedirecting] = useState(false);
+  const redirectedRef = useRef(false);
 
   useEffect(() => {
-    if (!isHydrated) return; // wait for localStorage hydration
-    if (!isLoggedIn && !isRedirecting) {
-      setIsRedirecting(true);
+    if (!isHydrated) return;
+    if (!isLoggedIn && !redirectedRef.current) {
+      redirectedRef.current = true;
       window.location.replace("/login");
     }
-  }, [isHydrated, isLoggedIn, isRedirecting]);
+  }, [isHydrated, isLoggedIn]);
 
   // While hydrating or not logged in, show a spinner — never flash protected content
   if (!isHydrated || !isLoggedIn) {

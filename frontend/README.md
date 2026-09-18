@@ -1,36 +1,94 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AgreementOS — Frontend Workspace
 
-## Getting Started
+> **The Operating System for Creator Partnerships & Commercial Rights**
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## 💡 What is AgreementOS?
+
+**AgreementOS** is an intelligent collaboration platform designed to eliminate miscommunication, unpaid scope creep, and expired commercial usage in the creator economy.
+
+Instead of burying contract terms in static PDFs and negotiating revisions across fragmented DMs, AgreementOS provides a shared, active deal room where:
+- **Contracts are living entities**: Key terms (deliverables, exclusivity, revisions, licensing periods, payment terms) are extracted and displayed as active term cards.
+- **Scope is protected in real time**: An AI Scope Guardian audits communications as they happen, catching informal revision requests and suggesting fair market compensation.
+- **Commercial rights are tracked**: RightsGuard actively monitors asset licensing to prevent unauthorized usage past contractual end dates.
+- **Both perspectives are unified**: Features instant persona toggling between **Brand (`Northstar Coffee`)** and **Creator (`Amara Okafor`)** to experience workflows from both vantage points.
+
+Built with **Next.js 16 (Turbopack)**, **React 19**, and **Tailwind CSS**.
+
+---
+
+## 🚀 Key Modules & Routing
+
+All deal room pages are nested under `/deals/[dealId]` and protected by `AuthGuard`:
+
+| Route | Purpose | Key Components |
+|---|---|---|
+| `/login` | Authentication & 1-Click Demo Login | Demo account selector, email/password form |
+| `/` | Root redirection | Directs authenticated users to `/deals/1`, otherwise to `/login` |
+| `/deals/[dealId]` | Deal Overview | High-priority attention cards, milestone status, quick actions |
+| `/deals/[dealId]/agreement` | Agreement & Terms | Extracted term cards, revision history, evidence viewer |
+| `/deals/[dealId]/messages` | Communications & Scope Guardian | Chat thread, inline AI scope change detection, drawer modal |
+| `/deals/[dealId]/deliverables` | Deliverables Pipeline | Video submission, status badges, review & approval workflow |
+| `/deals/[dealId]/content` | Commercial Assets | Asset metadata, active licensing duration, usage breakdown |
+| `/deals/[dealId]/licensing` | RightsGuard Monitoring | Expired usage flags, interactive license extension modal |
+| `/deals/[dealId]/change-requests` | Scope Adjustments | Compensation requests, approval and payout workflows |
+| `/deals/[dealId]/payments` | Financial Milestones | Payment schedules, disbursement receipts, fee breakdowns |
+| `/deals/[dealId]/activity` | Audit Trail | Chronological event log of all actions, submissions, and approvals |
+
+---
+
+## 🎨 Theme & Typography
+
+- **Headings**: `Fraunces` (`font-serif`) loaded via `@next/font/google`
+- **Body & Technical UI**: `Inter` (`font-sans`) loaded via `@next/font/google`
+- **Background**: `#FBF9F5` (Brand Cream)
+- **Palette**:
+  - Primary Purple: `#A05AFF`
+  - Secondary Mint: `#1BCFB4`
+  - Supporting Cyan: `#4BCBEB`
+  - Warning Coral: `#FE9496`
+  - Deep Violet: `#9E58FF`
+
+---
+
+## 🔐 Session Management
+
+Session state is handled centrally in `UserContext.tsx`:
+- **Hydration Safety**: Stored in `localStorage` (`agreementos_active_persona`).
+- **Zero-Flash AuthGuard**: Protected routes render a clean loader while hydrating, preventing unauthorized layout flashing.
+- **Dynamic Role Switching**: Real-time perspective toggling between:
+  - `brand` (`Northstar Coffee`)
+  - `creator` (`Amara Okafor`)
+
+---
+
+## ⚙️ Environment Variables
+
+Create a `.env.local` file in this directory to configure your API endpoint:
+
+```env
+# Optional: defaults to https://coolpractical.onrender.com if not specified
+NEXT_PUBLIC_API_URL=https://coolpractical.onrender.com
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🛠️ Development & Production Commands
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+# Install dependencies
+npm install
 
-## Learn More
+# Start development server on port 3000
+npm run dev
 
-To learn more about Next.js, take a look at the following resources:
+# Run ESLint validation
+npm run lint
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# Build production bundle
+npm run build
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+# Start production server
+npm run start
+```

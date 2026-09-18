@@ -9,7 +9,7 @@ import {
   demoContentItems,
 } from "@/app/lib/demo-data";
 import type { ContentItem } from "@/app/lib/types";
-import { CheckCircle2, Clock, AlertTriangle, X, ShieldCheck, ArrowRight } from "lucide-react";
+import { CheckCircle2, Clock, AlertTriangle, X, ShieldCheck } from "lucide-react";
 import Link from "next/link";
 
 export default function ContentPage() {

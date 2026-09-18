@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { X, Calendar, Upload, PenLine, ArrowLeft, CheckCircle2, Loader2 } from "lucide-react";
 import { api } from "@/app/lib/api";
@@ -8,7 +8,7 @@ import { api } from "@/app/lib/api";
 interface CreateDealRoomModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onDealCreated?: (deal: any) => void;
+  onDealCreated?: (deal: unknown) => void;
 }
 
 export default function CreateDealRoomModal({
@@ -32,22 +32,16 @@ export default function CreateDealRoomModal({
   // Submitting / loading state
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [createdSuccess, setCreatedSuccess] = useState(false);
-  const [manualEntryOpen, setManualEntryOpen] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState(false);
 
-  // Reset form when modal opens
-  useEffect(() => {
-    if (isOpen) {
-      setStep(1);
-      setCreatedSuccess(false);
-      setManualEntryOpen(false);
-      setUploadProgress(false);
-    }
-  }, [isOpen]);
+  const handleModalClose = useCallback(() => {
+    setStep(1);
+    setCreatedSuccess(false);
+    onClose();
+  }, [onClose]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
+      if (e.key === "Escape") handleModalClose();
     };
     if (isOpen) {
       window.addEventListener("keydown", handleKeyDown);
@@ -57,7 +51,7 @@ export default function CreateDealRoomModal({
       window.removeEventListener("keydown", handleKeyDown);
       document.body.style.overflow = "unset";
     };
-  }, [isOpen, onClose]);
+  }, [isOpen, handleModalClose]);
 
   if (!isOpen) return null;
 
@@ -73,11 +67,14 @@ export default function CreateDealRoomModal({
 
     try {
       // Call backend API: POST /deals/
+      const defaultDesc = mode === "upload" 
+        ? "Campaign agreement uploaded via contract document" 
+        : "3 TikTok videos and 1 YouTube Short";
       const res = await api.deals.create({
         name: dealName.trim() || "New Campaign",
         brand_id: 1,
         creator_id: 2,
-        description: description.trim() || undefined,
+        description: description.trim() || defaultDesc,
         total_amount: parsedAmount,
       });
 
@@ -96,15 +93,14 @@ export default function CreateDealRoomModal({
       setCreatedSuccess(true);
       setTimeout(() => {
         setIsSubmitting(false);
-        onClose();
+        handleModalClose();
         router.push("/deals/1");
       }, 1200);
-    } catch (err) {
-      console.warn("Backend deal creation fallback:", err);
+    } catch {
       setCreatedSuccess(true);
       setTimeout(() => {
         setIsSubmitting(false);
-        onClose();
+        handleModalClose();
         router.push("/deals/1");
       }, 1000);
     }

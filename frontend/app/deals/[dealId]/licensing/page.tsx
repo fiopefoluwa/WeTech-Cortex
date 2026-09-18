@@ -9,7 +9,6 @@ import {
   AlertTriangle,
   ShieldCheck,
   RotateCcw,
-  FileVideo,
 } from "lucide-react";
 import DealHeader from "@/app/components/DealHeader";
 import DetectedUsageDrawer from "@/app/components/DetectedUsageDrawer";

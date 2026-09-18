@@ -24,9 +24,10 @@ export default function AgreementPage() {
   const [selectedTerm, setSelectedTerm] = useState<ExtractedTerm | null>(null);
   const [extractionModalOpen, setExtractionModalOpen] = useState(false);
 
-  const handleTermsExtracted = (data: any) => {
-    // If backend returns updated terms, we can update or show notification
-    console.log("Terms received from backend extraction:", data);
+  const handleTermsExtracted = (data: unknown) => {
+    if (data && typeof data === "object" && "terms" in data && Array.isArray((data as { terms: ExtractedTerm[] }).terms)) {
+      setTerms((data as { terms: ExtractedTerm[] }).terms);
+    }
   };
 
   return (

@@ -1,4 +1,4 @@
-const BASE_URL = "https://coolpractical.onrender.com";
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "https://coolpractical.onrender.com";
 
 export interface ApiResponse<T> {
   ok: boolean;
@@ -48,40 +48,59 @@ async function safeRequest<T>(
 
     const data = (await res.json()) as T;
     return { ok: true, data, statusCode: res.status };
-  } catch (err: any) {
+  } catch (err: unknown) {
     clearTimeout(timeoutId);
-    if (err.name === "AbortError") {
+    if (err instanceof Error && err.name === "AbortError") {
       return {
         ok: false,
         error: "Request timed out. The backend may be waking up.",
         statusCode: 408,
       };
     }
+    const message = err instanceof Error ? err.message : "Network connection failed. Operating in offline/cached mode.";
     return {
       ok: false,
-      error: err?.message || "Network connection failed. Operating in offline/cached mode.",
+      error: message,
       statusCode: 0,
     };
   }
 }
 
+export interface BackendDeal {
+  id: number;
+  name: string;
+  brand_id: number;
+  creator_id: number;
+  description?: string;
+  total_amount: number;
+  status?: string;
+  created_at?: string;
+}
+
+export interface BackendUser {
+  id: number;
+  name: string;
+  role: string;
+  email: string;
+}
+
 export const api = {
   deals: {
-    get: (dealId: number) => safeRequest<any>(`/deals/${dealId}`),
+    get: (dealId: number) => safeRequest<BackendDeal>(`/deals/${dealId}`),
     create: (data: {
       name: string;
       brand_id: number;
       creator_id: number;
       description?: string;
       total_amount: number;
-    }) => safeRequest<any>("/deals/", { method: "POST", body: JSON.stringify(data) }),
+    }) => safeRequest<BackendDeal>("/deals/", { method: "POST", body: JSON.stringify(data) }),
   },
 
   agreements: {
     create: (dealId: number, rawText: string) =>
-      safeRequest<any>(
+      safeRequest<Record<string, unknown>>(
         `/agreements/${dealId}?raw_text=${encodeURIComponent(rawText)}`,
-        { method: "POST", timeoutMs: 45000 } // Allow longer timeout for Gemini model extraction
+        { method: "POST", timeoutMs: 45000 }
       ),
   },
 
@@ -108,7 +127,7 @@ export const api = {
       }>("/messages/", {
         method: "POST",
         body: JSON.stringify(data),
-        timeoutMs: 30000, // Gemini check_scope may take up to 25s on cold starts
+        timeoutMs: 30000,
       }),
   },
 
@@ -121,20 +140,20 @@ export const api = {
       requested_by: number;
       message_id?: number;
     }) =>
-      safeRequest<any>("/change-requests/", {
+      safeRequest<Record<string, unknown>>("/change-requests/", {
         method: "POST",
         body: JSON.stringify(data),
       }),
     approve: (crId: number) =>
-      safeRequest<any>(`/change-requests/${crId}/approve`, { method: "PATCH" }),
+      safeRequest<Record<string, unknown>>(`/change-requests/${crId}/approve`, { method: "PATCH" }),
     pay: (crId: number) =>
-      safeRequest<any>(`/change-requests/${crId}/pay`, { method: "PATCH" }),
+      safeRequest<Record<string, unknown>>(`/change-requests/${crId}/pay`, { method: "PATCH" }),
   },
 
   users: {
-    get: (userId: number) => safeRequest<any>(`/users/${userId}`),
+    get: (userId: number) => safeRequest<BackendUser>(`/users/${userId}`),
     create: (name: string, role: string, email: string) =>
-      safeRequest<any>(
+      safeRequest<BackendUser>(
         `/users/?name=${encodeURIComponent(name)}&role=${encodeURIComponent(role)}&email=${encodeURIComponent(email)}`,
         { method: "POST" }
       ),

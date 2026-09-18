@@ -11,7 +11,7 @@ import {
   demoPayments,
 } from "@/app/lib/demo-data";
 import type { PaymentItem } from "@/app/lib/types";
-import { CheckCircle2, Clock, ArrowRight, Receipt, Wallet, CreditCard } from "lucide-react";
+import { CheckCircle2, Clock, ArrowRight } from "lucide-react";
 
 export default function PaymentsPage() {
   const params = useParams();

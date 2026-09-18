@@ -15,7 +15,6 @@ import {
   recentActivities,
 } from "@/app/lib/demo-data";
 import type { AttentionItem } from "@/app/lib/types";
-import { CheckCircle2, ArrowRight } from "lucide-react";
 
 export default function DealRoomOverview({
   params,
@@ -23,7 +22,7 @@ export default function DealRoomOverview({
   params: Promise<{ dealId: string }>;
 }) {
   const { dealId } = use(params);
-  const { role, user, switchRole } = useUser();
+  const { role } = useUser();
 
   // Role-specific attention items
   const brandAttentionItems: AttentionItem[] = [

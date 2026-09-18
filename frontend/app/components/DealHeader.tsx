@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { FileCheck, FileSearch, CheckCircle2 } from "lucide-react";
+import { FileCheck, FileSearch } from "lucide-react";
 import ReviewExtractionModal from "./ReviewExtractionModal";
 
 interface DealHeaderProps {

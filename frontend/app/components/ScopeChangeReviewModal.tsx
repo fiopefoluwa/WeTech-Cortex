@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { X, Scale, CheckCircle2, ArrowRight, ShieldAlert, Loader2, FileText } from "lucide-react";
+import { X, Scale, CheckCircle2, ArrowRight, ShieldAlert, Loader2 } from "lucide-react";
 
 interface ScopeChangeReviewModalProps {
   isOpen: boolean;

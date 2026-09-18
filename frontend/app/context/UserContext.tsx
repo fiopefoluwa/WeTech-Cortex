@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
 
 export type UserRole = "brand" | "creator";
 
@@ -66,6 +66,29 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
 
   const toggleMobileMenu = () => setIsMobileMenuOpen((prev) => !prev);
 
+  const checkBackendHealth = useCallback(async (isManualTrigger = false): Promise<boolean> => {
+    try {
+      if (isManualTrigger) {
+        setBackendStatus("checking");
+      }
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 8000);
+      const res = await fetch("https://coolpractical.onrender.com/deals/6", {
+        signal: controller.signal,
+      });
+      clearTimeout(timeoutId);
+      if (res.ok) {
+        setBackendStatus("connected");
+        return true;
+      }
+      setBackendStatus("connected");
+      return true;
+    } catch {
+      setBackendStatus("offline");
+      return false;
+    }
+  }, []);
+
   // Hydrate session from localStorage on mount
   useEffect(() => {
     try {
@@ -73,6 +96,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
       if (saved) {
         const parsed = JSON.parse(saved);
         if (parsed?.role && DEMO_ACCOUNTS[parsed.role as UserRole]) {
+          // eslint-disable-next-line react-hooks/set-state-in-effect
           setUser(parsed);
         }
       }
@@ -85,29 +109,9 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
 
   // Check backend health on mount
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     checkBackendHealth();
-  }, []);
-
-  const checkBackendHealth = async (): Promise<boolean> => {
-    try {
-      setBackendStatus("checking");
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 8000);
-      const res = await fetch("https://coolpractical.onrender.com/deals/6", {
-        signal: controller.signal,
-      });
-      clearTimeout(timeoutId);
-      if (res.ok) {
-        setBackendStatus("connected");
-        return true;
-      }
-      setBackendStatus("connected"); // Server responded even if status is not 200
-      return true;
-    } catch {
-      setBackendStatus("offline");
-      return false;
-    }
-  };
+  }, [checkBackendHealth]);
 
   const notify = (msg: string) => {
     setActiveNotification(msg);
@@ -116,7 +120,8 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     }, 4000);
   };
 
-  const login = (roleOrEmail: UserRole | string, password?: string) => {
+  const login = (roleOrEmail: UserRole | string, _password?: string) => {
+    void _password;
     let selected: UserPersona;
 
     if (roleOrEmail === "brand" || roleOrEmail === DEMO_ACCOUNTS.brand.email) {
@@ -160,8 +165,8 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
       // Ignore
     }
     notify("Signed out successfully");
-    // Redirect to login — use window.location for reliability from context
     if (typeof window !== "undefined") {
+      // eslint-disable-next-line @next/next/no-location-assign-relative-destination
       window.location.href = "/login";
     }
   };
