@@ -16,9 +16,23 @@ const fraunces = Fraunces({
 });
 
 export const metadata: Metadata = {
-  title: "AgreementOS — Work Made Clear",
+  title: "AgreementOS",
   description:
     "A shared workspace for brands and creators to manage agreements, communication, deliverables, licensing, and payments.",
+  icons: {
+    icon: [
+      { url: "/icon.svg", type: "image/svg+xml" },
+    ],
+    apple: [
+      { url: "/apple-icon.svg", type: "image/svg+xml" },
+    ],
+  },
+  openGraph: {
+    title: "AgreementOS",
+    description:
+      "A shared workspace for brands and creators to manage agreements, communication, deliverables, licensing, and payments.",
+    siteName: "AgreementOS",
+  },
 };
 
 export default function RootLayout({
