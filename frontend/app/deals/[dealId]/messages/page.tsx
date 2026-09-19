@@ -5,11 +5,9 @@ import { useParams } from "next/navigation";
 import DealHeader from "@/app/components/DealHeader";
 import PotentialScopeChangeDrawer from "@/app/components/PotentialScopeChangeDrawer";
 import { useUser } from "@/app/context/UserContext";
+import { useDeal } from "@/app/context/DealContext";
 import { api } from "@/app/lib/api";
 import {
-  demoDeal,
-  demoBrand,
-  demoCreator,
   demoChatMessages,
 } from "@/app/lib/demo-data";
 import type { ChatMessage } from "@/app/lib/types";
@@ -24,8 +22,23 @@ export default function MessagesPage() {
   const params = useParams();
   const dealId = (params?.dealId as string) || "1";
   const { user, role, switchRole } = useUser();
+  const { getDeal } = useDeal();
+  const deal = getDeal(dealId);
+  const isCustomDeal = String(deal.id) !== "1";
 
-  const [messages, setMessages] = useState<ChatMessage[]>(demoChatMessages);
+  const customMessages: ChatMessage[] = [
+    {
+      id: "msg-custom-1",
+      senderName: deal.brandName,
+      senderRole: "brand",
+      time: "10:00",
+      content: `Hi ${deal.creatorName}! Thanks for collaborating on ${deal.name}. We've set up the deal room with ₦${deal.totalAmount.toLocaleString()} in agreed scope (${deal.description}). Let's get started!`,
+    },
+  ];
+
+  const [messages, setMessages] = useState<ChatMessage[]>(
+    isCustomDeal ? customMessages : demoChatMessages
+  );
   const [inputText, setInputText] = useState("");
   const [scopeDrawerOpen, setScopeDrawerOpen] = useState(false);
   const [isAuditing, setIsAuditing] = useState(false);
@@ -42,7 +55,7 @@ export default function MessagesPage() {
       .toString()
       .padStart(2, "0")}`;
 
-    const senderName = role === "brand" ? "Northstar Coffee" : "Amara Okafor";
+    const senderName = user?.name || (role === "brand" ? deal.brandName : deal.creatorName);
     const senderRole = role;
 
     // Fast client-side check so UI is immediately responsive
@@ -133,11 +146,11 @@ export default function MessagesPage() {
     <div className="pb-12">
       {/* Top Deal Header */}
       <DealHeader
-        dealName={demoDeal.name}
-        brandName={demoBrand.name}
-        creatorName={demoCreator.name}
-        status={demoDeal.status}
-        agreementUpdated={demoDeal.agreementUpdated}
+        dealName={deal.name}
+        brandName={deal.brandName}
+        creatorName={deal.creatorName}
+        status={deal.status}
+        agreementUpdated={deal.agreementUpdated}
         dealId={dealId}
       />
 
@@ -165,7 +178,7 @@ export default function MessagesPage() {
           <span className="text-xs text-zinc-600 font-normal">
             Chatting as:{" "}
             <strong className="text-zinc-900 font-semibold">
-              {role === "brand" ? "Northstar Coffee" : "Amara Okafor"}
+              {role === "brand" ? deal.brandName : deal.creatorName}
             </strong>
           </span>
           <button

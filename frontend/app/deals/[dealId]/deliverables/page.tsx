@@ -1,13 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import { useParams } from "next/navigation";
 import DealHeader from "@/app/components/DealHeader";
 import { useUser } from "@/app/context/UserContext";
+import { useDeal } from "@/app/context/DealContext";
 import {
-  demoDeal,
-  demoBrand,
-  demoCreator,
   demoDeliverables,
+  formatFriendlyDate,
 } from "@/app/lib/demo-data";
 import type { DeliverableItem } from "@/app/lib/types";
 import {
@@ -22,8 +22,30 @@ import {
 } from "lucide-react";
 
 export default function DeliverablesPage() {
+  const params = useParams();
+  const dealId = (params?.dealId as string) || "1";
   const { role, switchRole, setNotification } = useUser();
-  const [deliverables, setDeliverables] = useState<DeliverableItem[]>(demoDeliverables);
+  const { getDeal } = useDeal();
+  const deal = getDeal(dealId);
+  const isCustomDeal = String(deal.id) !== "1";
+
+  const customDeliverables: DeliverableItem[] = [
+    {
+      id: "del-custom-1",
+      name: `${deal.name} Deliverable #01`,
+      agreedScope: "Primary Agreement Scope",
+      status: "Not started",
+      statusVariant: "orange",
+      deadline: formatFriendlyDate(deal.endDate),
+      revisions: "0 / 1 revision",
+      referenceClause: "Deliverables §1.1",
+      referenceText: `Agreed work for ${deal.brandName}: ${deal.description}.`,
+    },
+  ];
+
+  const [deliverables, setDeliverables] = useState<DeliverableItem[]>(
+    isCustomDeal ? customDeliverables : demoDeliverables
+  );
   const [selectedReference, setSelectedReference] = useState<DeliverableItem | null>(null);
 
   // Modals for actions
@@ -110,11 +132,12 @@ export default function DeliverablesPage() {
     <div className="pb-12">
       {/* Deal Header */}
       <DealHeader
-        dealName={demoDeal.name}
-        brandName={demoBrand.name}
-        creatorName={demoCreator.name}
-        status={demoDeal.status}
-        agreementUpdated={demoDeal.agreementUpdated}
+        dealName={deal.name}
+        brandName={deal.brandName}
+        creatorName={deal.creatorName}
+        status={deal.status}
+        agreementUpdated={deal.agreementUpdated}
+        dealId={dealId}
       />
 
       {/* Page Title & Role Action Toolbar */}

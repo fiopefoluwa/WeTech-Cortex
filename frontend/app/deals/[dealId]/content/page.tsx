@@ -1,11 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import { useParams } from "next/navigation";
 import DealHeader from "@/app/components/DealHeader";
+import { useDeal } from "@/app/context/DealContext";
 import {
-  demoDeal,
-  demoBrand,
-  demoCreator,
   demoContentItems,
 } from "@/app/lib/demo-data";
 import type { ContentItem } from "@/app/lib/types";
@@ -13,6 +12,25 @@ import { CheckCircle2, Clock, AlertTriangle, X, ShieldCheck } from "lucide-react
 import Link from "next/link";
 
 export default function ContentPage() {
+  const params = useParams();
+  const dealId = (params?.dealId as string) || "1";
+  const { getDeal } = useDeal();
+  const deal = getDeal(dealId);
+  const isCustomDeal = String(deal.id) !== "1";
+
+  const customContentItems: ContentItem[] = [
+    {
+      id: "cnt-custom-1",
+      title: `${deal.name} Asset #01`,
+      platform: "TikTok · Instagram",
+      submission: "In Production",
+      licenseStatus: "Active",
+      licenseVariant: "green",
+      termsSummary: `Primary content deliverable for ${deal.brandName}: ${deal.description}`,
+    },
+  ];
+
+  const contentItems = isCustomDeal ? customContentItems : demoContentItems;
   const [selectedItem, setSelectedItem] = useState<ContentItem | null>(null);
 
   const getLicenseBadge = (status: ContentItem["licenseStatus"]) => {
@@ -45,11 +63,12 @@ export default function ContentPage() {
     <div className="pb-12">
       {/* Top Deal Header */}
       <DealHeader
-        dealName={demoDeal.name}
-        brandName={demoBrand.name}
-        creatorName={demoCreator.name}
-        status={demoDeal.status}
-        agreementUpdated={demoDeal.agreementUpdated}
+        dealName={deal.name}
+        brandName={deal.brandName}
+        creatorName={deal.creatorName}
+        status={deal.status}
+        agreementUpdated={deal.agreementUpdated}
+        dealId={dealId}
       />
 
       {/* Page Title Section */}
@@ -89,7 +108,7 @@ export default function ContentPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-zinc-100">
-              {demoContentItems.map((item) => (
+              {contentItems.map((item) => (
                 <tr
                   key={item.id}
                   className="hover:bg-zinc-50/60 transition-colors group"

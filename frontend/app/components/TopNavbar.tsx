@@ -16,7 +16,11 @@ import Link from "next/link";
 import CreateDealRoomModal from "./CreateDealRoomModal";
 import { useUser, type UserRole } from "@/app/context/UserContext";
 
-export default function TopNavbar() {
+interface TopNavbarProps {
+  currentDealName?: string;
+}
+
+export default function TopNavbar({ currentDealName }: TopNavbarProps = {}) {
   const {
     user,
     role,
@@ -69,7 +73,7 @@ export default function TopNavbar() {
           </span>
           <span className="hidden sm:inline text-zinc-300 font-light">/</span>
           <span className="text-xs sm:text-sm font-medium text-zinc-800 truncate max-w-[160px] sm:max-w-none">
-            Summer Creator Campaign
+            {currentDealName || "Summer Creator Campaign"}
           </span>
 
           {/* Backend Status indicator */}
@@ -138,9 +142,7 @@ export default function TopNavbar() {
                     onMouseLeave={() => setIsUserMenuOpen(false)}
                   >
                     <div className="px-4 py-2 border-b border-zinc-100">
-                      <p className="text-[10px] font-semibold text-zinc-400 uppercase tracking-wider">
-                        Active Persona
-                      </p>
+                     
                       <p className="text-xs font-bold text-zinc-900 mt-0.5">
                         {user.name}
                       </p>
@@ -191,7 +193,7 @@ export default function TopNavbar() {
                         className="w-full flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs text-zinc-600 hover:bg-zinc-50 hover:text-zinc-900 transition-colors font-normal"
                       >
                         <User size={13} className="text-zinc-400" />
-                        <span>Go to Login Page</span>
+                        <span>Login Page</span>
                       </Link>
                       <button
                         type="button"

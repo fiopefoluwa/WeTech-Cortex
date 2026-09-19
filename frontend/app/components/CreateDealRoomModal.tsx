@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { X, Calendar, Upload, PenLine, ArrowLeft, CheckCircle2, Loader2 } from "lucide-react";
-import { api } from "@/app/lib/api";
+import { useDeal } from "@/app/context/DealContext";
 
 interface CreateDealRoomModalProps {
   isOpen: boolean;
@@ -17,6 +17,7 @@ export default function CreateDealRoomModal({
   onDealCreated,
 }: CreateDealRoomModalProps) {
   const router = useRouter();
+  const { createDeal } = useDeal();
 
   const [step, setStep] = useState<1 | 2>(1);
 
@@ -29,6 +30,20 @@ export default function CreateDealRoomModal({
   const [endDate, setEndDate] = useState("");
   const [description, setDescription] = useState("");
 
+  const startDateRef = useRef<HTMLInputElement>(null);
+  const endDateRef = useRef<HTMLInputElement>(null);
+
+  const setTodayStart = () => {
+    const today = new Date().toISOString().split("T")[0];
+    setStartDate(today);
+  };
+
+  const setPresetEndDate = (days: number) => {
+    const base = startDate ? new Date(startDate) : new Date();
+    const future = new Date(base.getTime() + days * 24 * 60 * 60 * 1000);
+    setEndDate(future.toISOString().split("T")[0]);
+  };
+
   // Submitting / loading state
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [createdSuccess, setCreatedSuccess] = useState(false);
@@ -36,6 +51,13 @@ export default function CreateDealRoomModal({
   const handleModalClose = useCallback(() => {
     setStep(1);
     setCreatedSuccess(false);
+    setDealName("");
+    setClientBrand("");
+    setCreator("");
+    setAmount("");
+    setStartDate("");
+    setEndDate("");
+    setDescription("");
     onClose();
   }, [onClose]);
 
@@ -64,45 +86,46 @@ export default function CreateDealRoomModal({
   const handleCreateDeal = async (mode: "upload" | "manual") => {
     setIsSubmitting(true);
     const parsedAmount = parseInt(amount.replace(/[^0-9]/g, ""), 10) || 50000;
+    const defaultDesc = mode === "upload" 
+      ? "Campaign agreement uploaded via contract document" 
+      : "Campaign partnership deliverables";
+    const finalDescription = description.trim() || defaultDesc;
 
     try {
-      // Call backend API: POST /deals/
-      const defaultDesc = mode === "upload" 
-        ? "Campaign agreement uploaded via contract document" 
-        : "3 TikTok videos and 1 YouTube Short";
-      const res = await api.deals.create({
+      const newDealId = await createDeal({
         name: dealName.trim() || "New Campaign",
-        brand_id: 1,
-        creator_id: 2,
-        description: description.trim() || defaultDesc,
-        total_amount: parsedAmount,
+        brandName: clientBrand.trim() || "Brand Client",
+        creatorName: creator.trim() || "Creator",
+        amount: parsedAmount,
+        description: finalDescription,
+        startDate,
+        endDate,
       });
 
-      if (res.ok && res.data) {
-        const newDealId = res.data.id;
-        const rawAgreement = `Brand agrees to pay Creator ${parsedAmount} Naira for ${
-          description.trim() || "3 TikTok videos and 1 YouTube Short"
-        }.`;
-        // Fire agreement creation in background
-        api.agreements.create(newDealId, rawAgreement).catch(() => {});
-        if (onDealCreated) onDealCreated(res.data);
-      } else if (onDealCreated) {
-        onDealCreated(res);
+      if (onDealCreated) {
+        onDealCreated({
+          id: newDealId,
+          name: dealName.trim(),
+          brandName: clientBrand.trim(),
+          creatorName: creator.trim(),
+          amount: parsedAmount,
+          description: finalDescription,
+        });
       }
 
       setCreatedSuccess(true);
       setTimeout(() => {
         setIsSubmitting(false);
         handleModalClose();
-        router.push("/deals/1");
-      }, 1200);
+        router.push(`/deals/${newDealId}`);
+      }, 900);
     } catch {
       setCreatedSuccess(true);
       setTimeout(() => {
         setIsSubmitting(false);
         handleModalClose();
         router.push("/deals/1");
-      }, 1000);
+      }, 900);
     }
   };
 
@@ -207,40 +230,101 @@ export default function CreateDealRoomModal({
               {/* Row 3 */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-zinc-800 mb-1.5">
-                    Start date
-                  </label>
-                  <div className="relative">
+                  <div className="flex items-center justify-between mb-1.5">
+                    <label className="block text-xs font-semibold text-zinc-800">
+                      Start date
+                    </label>
+                    <button
+                      type="button"
+                      onClick={setTodayStart}
+                      className="text-[10px] font-medium text-[#A05AFF] hover:underline cursor-pointer"
+                    >
+                      Set today
+                    </button>
+                  </div>
+                  <div className="relative group">
                     <input
-                      type="text"
+                      ref={startDateRef}
+                      type="date"
                       value={startDate}
                       onChange={(e) => setStartDate(e.target.value)}
-                      placeholder="dd/mm/yyyy"
-                      className="w-full px-4 py-2.5 rounded-xl border border-zinc-200 text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-[#A05AFF]/20 focus:border-[#A05AFF] transition-all bg-white pr-10"
+                      onClick={(e) => {
+                        try {
+                          e.currentTarget.showPicker();
+                        } catch {}
+                      }}
+                      className="w-full px-4 py-2.5 rounded-xl border border-zinc-200 text-sm text-zinc-900 focus:outline-none focus:ring-2 focus:ring-[#A05AFF]/20 focus:border-[#A05AFF] transition-all bg-white cursor-pointer pr-10 appearance-none [&::-webkit-calendar-picker-indicator]:cursor-pointer [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:right-2.5 [&::-webkit-calendar-picker-indicator]:w-6 [&::-webkit-calendar-picker-indicator]:h-6 [&::-webkit-calendar-picker-indicator]:z-10"
                     />
-                    <Calendar
-                      size={16}
-                      className="absolute right-3.5 top-1/2 -translate-y-1/2 text-zinc-400 pointer-events-none"
-                    />
+                    <button
+                      type="button"
+                      tabIndex={-1}
+                      onClick={() => {
+                        try {
+                          startDateRef.current?.showPicker();
+                        } catch {
+                          startDateRef.current?.focus();
+                        }
+                      }}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 group-hover:text-zinc-600 transition-colors cursor-pointer p-0.5 pointer-events-auto"
+                      aria-label="Pick start date"
+                    >
+                      <Calendar size={16} />
+                    </button>
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-zinc-800 mb-1.5">
-                    End date
-                  </label>
-                  <div className="relative">
+                  <div className="flex items-center justify-between mb-1.5">
+                    <label className="block text-xs font-semibold text-zinc-800">
+                      End date
+                    </label>
+                    <div className="flex items-center gap-1.5 text-[10px] text-zinc-400">
+                      <button
+                        type="button"
+                        onClick={() => setPresetEndDate(30)}
+                        className="font-medium text-[#A05AFF] hover:underline cursor-pointer"
+                      >
+                        +30d
+                      </button>
+                      <span>·</span>
+                      <button
+                        type="button"
+                        onClick={() => setPresetEndDate(60)}
+                        className="font-medium text-[#A05AFF] hover:underline cursor-pointer"
+                      >
+                        +60d
+                      </button>
+                    </div>
+                  </div>
+                  <div className="relative group">
                     <input
-                      type="text"
+                      ref={endDateRef}
+                      type="date"
+                      min={startDate || undefined}
                       value={endDate}
                       onChange={(e) => setEndDate(e.target.value)}
-                      placeholder="dd/mm/yyyy"
-                      className="w-full px-4 py-2.5 rounded-xl border border-zinc-200 text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-[#A05AFF]/20 focus:border-[#A05AFF] transition-all bg-white pr-10"
+                      onClick={(e) => {
+                        try {
+                          e.currentTarget.showPicker();
+                        } catch {}
+                      }}
+                      className="w-full px-4 py-2.5 rounded-xl border border-zinc-200 text-sm text-zinc-900 focus:outline-none focus:ring-2 focus:ring-[#A05AFF]/20 focus:border-[#A05AFF] transition-all bg-white cursor-pointer pr-10 appearance-none [&::-webkit-calendar-picker-indicator]:cursor-pointer [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:right-2.5 [&::-webkit-calendar-picker-indicator]:w-6 [&::-webkit-calendar-picker-indicator]:h-6 [&::-webkit-calendar-picker-indicator]:z-10"
                     />
-                    <Calendar
-                      size={16}
-                      className="absolute right-3.5 top-1/2 -translate-y-1/2 text-zinc-400 pointer-events-none"
-                    />
+                    <button
+                      type="button"
+                      tabIndex={-1}
+                      onClick={() => {
+                        try {
+                          endDateRef.current?.showPicker();
+                        } catch {
+                          endDateRef.current?.focus();
+                        }
+                      }}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 group-hover:text-zinc-600 transition-colors cursor-pointer p-0.5 pointer-events-auto"
+                      aria-label="Pick end date"
+                    >
+                      <Calendar size={16} />
+                    </button>
                   </div>
                 </div>
               </div>

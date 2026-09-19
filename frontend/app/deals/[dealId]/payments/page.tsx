@@ -4,10 +4,8 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import DealHeader from "@/app/components/DealHeader";
 import { useUser } from "@/app/context/UserContext";
+import { useDeal } from "@/app/context/DealContext";
 import {
-  demoDeal,
-  demoBrand,
-  demoCreator,
   demoPayments,
 } from "@/app/lib/demo-data";
 import type { PaymentItem } from "@/app/lib/types";
@@ -17,6 +15,23 @@ export default function PaymentsPage() {
   const params = useParams();
   const dealId = (params?.dealId as string) || "1";
   const { role, switchRole } = useUser();
+  const { getDeal } = useDeal();
+  const deal = getDeal(dealId);
+  const isCustomDeal = String(deal.id) !== "1";
+
+  const customPayments: PaymentItem[] = [
+    {
+      id: "pay-custom-1",
+      agreementEvent: `Escrow Deposit: ${deal.name}`,
+      financialImpact: `₦${deal.totalAmount.toLocaleString()}`,
+      payment: `Initial contract value for ${deal.description}`,
+      status: "Pending",
+      statusVariant: "orange",
+      details: `Full contract compensation deposited in Scope escrow`,
+    },
+  ];
+
+  const paymentsToDisplay = isCustomDeal ? customPayments : demoPayments;
 
   const getStatusBadge = (status: PaymentItem["status"]) => {
     switch (status) {
@@ -43,11 +58,11 @@ export default function PaymentsPage() {
     <div className="pb-12">
       {/* Top Deal Header */}
       <DealHeader
-        dealName={demoDeal.name}
-        brandName={demoBrand.name}
-        creatorName={demoCreator.name}
-        status={demoDeal.status}
-        agreementUpdated={demoDeal.agreementUpdated}
+        dealName={deal.name}
+        brandName={deal.brandName}
+        creatorName={deal.creatorName}
+        status={deal.status}
+        agreementUpdated={deal.agreementUpdated}
         dealId={dealId}
       />
 
@@ -62,8 +77,8 @@ export default function PaymentsPage() {
           </h1>
           <p className="text-xs sm:text-sm text-zinc-500 font-normal">
             {role === "brand"
-              ? "Payments authorized and disbursed by Northstar Coffee."
-              : "Payouts received and scheduled for Amara Okafor."}
+              ? `Payments authorized and disbursed by ${deal.brandName}.`
+              : `Payouts received and scheduled for ${deal.creatorName}.`}
           </p>
         </div>
 
@@ -97,23 +112,33 @@ export default function PaymentsPage() {
           <p className="text-[10px] font-semibold tracking-[0.12em] text-zinc-400 uppercase mb-1 font-sans">
             {role === "brand" ? "Total Committed" : "Total Contract Value"}
           </p>
-          <p className="font-serif text-2xl font-bold text-zinc-900">₦340,000</p>
-          <p className="text-[11px] text-zinc-500 font-light mt-1">Includes CR #02 adjustment</p>
+          <p className="font-serif text-2xl font-bold text-zinc-900">
+            ₦{deal.totalAmount.toLocaleString()}
+          </p>
+          <p className="text-[11px] text-zinc-500 font-light mt-1">
+            {isCustomDeal ? "Full contract value" : "Includes CR #02 adjustment"}
+          </p>
         </div>
 
         <div className="bg-white rounded-2xl border border-[#E8E5DC] p-5 shadow-[0_1px_2px_rgba(0,0,0,0.03)]">
           <p className="text-[10px] font-semibold tracking-[0.12em] text-zinc-400 uppercase mb-1 font-sans">
             {role === "brand" ? "Disbursed to Date" : "Earnings Received"}
           </p>
-          <p className="font-serif text-2xl font-bold text-[#0A7B69]">₦40,000</p>
-          <p className="text-[11px] text-zinc-500 font-light mt-1">CR #02 settled Sept 14</p>
+          <p className="font-serif text-2xl font-bold text-[#0A7B69]">
+            {isCustomDeal ? "₦0" : "₦40,000"}
+          </p>
+          <p className="text-[11px] text-zinc-500 font-light mt-1">
+            {isCustomDeal ? "Awaiting deliverable completion" : "CR #02 settled Sept 14"}
+          </p>
         </div>
 
         <div className="bg-white rounded-2xl border border-[#E8E5DC] p-5 shadow-[0_1px_2px_rgba(0,0,0,0.03)]">
           <p className="text-[10px] font-semibold tracking-[0.12em] text-zinc-400 uppercase mb-1 font-sans">
             {role === "brand" ? "Held in Milestone Escrow" : "Scheduled on Completion"}
           </p>
-          <p className="font-serif text-2xl font-bold text-[#702AE0]">₦300,000</p>
+          <p className="font-serif text-2xl font-bold text-[#702AE0]">
+            ₦{deal.totalAmount.toLocaleString()}
+          </p>
           <p className="text-[11px] text-zinc-500 font-light mt-1">Releases upon deliverable verification</p>
         </div>
       </div>
@@ -142,7 +167,7 @@ export default function PaymentsPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-zinc-100">
-              {demoPayments.map((item) => (
+              {paymentsToDisplay.map((item) => (
                 <tr
                   key={item.id}
                   className="hover:bg-zinc-50/60 transition-colors group"
@@ -198,8 +223,8 @@ export default function PaymentsPage() {
         </h2>
         <p className="text-xs text-zinc-500 font-normal leading-relaxed">
           {role === "brand"
-            ? "As Northstar Coffee, your disbursements are cryptographically connected to contract clauses. No surprise costs or unauthorized outflows."
-            : "As Amara Okafor, every payment you receive is grounded in written contract terms. Once deliverables are verified, funds release automatically."}
+            ? `As ${deal.brandName}, your disbursements are cryptographically connected to contract clauses. No surprise costs or unauthorized outflows.`
+            : `As ${deal.creatorName}, every payment you receive is grounded in written contract terms. Once deliverables are verified, funds release automatically.`}
         </p>
       </div>
     </div>

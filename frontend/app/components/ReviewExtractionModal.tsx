@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { X, Check, Clock, AlertTriangle, PenLine, UploadCloud, FileText, Loader2 } from "lucide-react";
 import { api } from "@/app/lib/api";
+import { useDeal } from "@/app/context/DealContext";
 
 interface ReviewExtractionModalProps {
   dealId?: string;
@@ -19,6 +20,10 @@ export default function ReviewExtractionModal({
   onClose,
   onTermsExtracted,
 }: ReviewExtractionModalProps) {
+  const { getDeal } = useDeal();
+  const deal = getDeal(dealId);
+  const isCustomDeal = String(deal.id) !== "1";
+
   const [step, setStep] = useState<ModalStep>("review");
   const [manualText, setManualText] = useState("");
   const [isConfirmed, setIsConfirmed] = useState(false);
@@ -57,14 +62,14 @@ export default function ReviewExtractionModal({
           if (onTermsExtracted) onTermsExtracted(res.data);
         }
       }
-    } catch (err) {
-      console.warn("Agreement text extraction notice:", err);
+    } catch {
+      // Offline fallback
+    } finally {
+      setTimeout(() => {
+        setIsSaved(false);
+        setStep("review");
+      }, 1000);
     }
-
-    setTimeout(() => {
-      setIsSaved(false);
-      setStep("review");
-    }, 1200);
   };
 
   const handleFileUpload = async (e: React.FormEvent) => {
@@ -72,7 +77,7 @@ export default function ReviewExtractionModal({
     if (!selectedFile) return;
 
     setIsUploading(true);
-    setUploadStatus("Parsing PDF and extracting structured terms via AI...");
+    setUploadStatus("Uploading and analyzing document...");
 
     try {
       const res = await api.agreements.uploadPdf(parseInt(dealId) || 1, selectedFile);
@@ -154,7 +159,7 @@ export default function ReviewExtractionModal({
                   </span>
                   <div>
                     <p className="font-serif text-sm sm:text-[15px] font-bold text-zinc-900 leading-tight">
-                      3 TikTok videos
+                      {isCustomDeal ? deal.description : "3 TikTok videos"}
                     </p>
                     <p className="text-xs text-zinc-500 font-light font-sans">Deliverables §2</p>
                   </div>
@@ -170,7 +175,7 @@ export default function ReviewExtractionModal({
                   </span>
                   <div>
                     <p className="font-serif text-sm sm:text-[15px] font-bold text-zinc-900 leading-tight">
-                      ₦300,000 total compensation
+                      ₦{deal.totalAmount.toLocaleString()} total compensation
                     </p>
                     <p className="text-xs text-zinc-500 font-light font-sans">Commercial Terms §4</p>
                   </div>
@@ -186,7 +191,7 @@ export default function ReviewExtractionModal({
                   </span>
                   <div>
                     <p className="font-serif text-sm sm:text-[15px] font-bold text-zinc-900 leading-tight">
-                      30 days organic usage (TikTok + IG)
+                      30 days organic usage ({isCustomDeal ? "Channels defined" : "TikTok + IG"})
                     </p>
                     <p className="text-xs text-zinc-500 font-light font-sans">Licensing §5</p>
                   </div>

@@ -14,10 +14,8 @@ import DealHeader from "@/app/components/DealHeader";
 import DetectedUsageDrawer from "@/app/components/DetectedUsageDrawer";
 import LicenseRenewalModal from "@/app/components/LicenseRenewalModal";
 import { useUser } from "@/app/context/UserContext";
+import { useDeal } from "@/app/context/DealContext";
 import {
-  demoDeal,
-  demoBrand,
-  demoCreator,
   heroLicenseItem,
   otherLicenseItems,
 } from "@/app/lib/demo-data";
@@ -26,6 +24,8 @@ export default function LicensingPage() {
   const params = useParams();
   const dealId = (params?.dealId as string) || "1";
   const { role, switchRole, setNotification } = useUser();
+  const { getDeal } = useDeal();
+  const deal = getDeal(dealId);
 
   const [detectedDrawerOpen, setDetectedDrawerOpen] = useState(false);
   const [renewalModalOpen, setRenewalModalOpen] = useState(false);
@@ -40,11 +40,11 @@ export default function LicensingPage() {
     <div className="pb-12">
       {/* Top Deal Header */}
       <DealHeader
-        dealName={demoDeal.name}
-        brandName={demoBrand.name}
-        creatorName={demoCreator.name}
-        status={demoDeal.status}
-        agreementUpdated={demoDeal.agreementUpdated}
+        dealName={deal.name}
+        brandName={deal.brandName}
+        creatorName={deal.creatorName}
+        status={deal.status}
+        agreementUpdated={deal.agreementUpdated}
         dealId={dealId}
       />
 

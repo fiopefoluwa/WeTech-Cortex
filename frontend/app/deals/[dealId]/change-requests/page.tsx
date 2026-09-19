@@ -9,10 +9,8 @@ import AgreementEvidenceDrawer, {
   type EvidenceType,
 } from "@/app/components/AgreementEvidenceDrawer";
 import { useUser } from "@/app/context/UserContext";
+import { useDeal } from "@/app/context/DealContext";
 import {
-  demoDeal,
-  demoBrand,
-  demoCreator,
   demoChangeRequest,
 } from "@/app/lib/demo-data";
 
@@ -20,6 +18,8 @@ export default function ChangeRequestsPage() {
   const params = useParams();
   const dealId = (params?.dealId as string) || "1";
   const { role, switchRole } = useUser();
+  const { getDeal } = useDeal();
+  const deal = getDeal(dealId);
   const [evidenceDrawer, setEvidenceDrawer] = useState<EvidenceType | null>(null);
 
   const cr = demoChangeRequest;
@@ -28,11 +28,11 @@ export default function ChangeRequestsPage() {
     <div className="pb-12">
       {/* Top Deal Header */}
       <DealHeader
-        dealName={demoDeal.name}
-        brandName={demoBrand.name}
-        creatorName={demoCreator.name}
-        status={demoDeal.status}
-        agreementUpdated={demoDeal.agreementUpdated}
+        dealName={deal.name}
+        brandName={deal.brandName}
+        creatorName={deal.creatorName}
+        status={deal.status}
+        agreementUpdated={deal.agreementUpdated}
         dealId={dealId}
       />
 
@@ -190,7 +190,7 @@ export default function ChangeRequestsPage() {
         isOpen={!!evidenceDrawer}
         onClose={() => setEvidenceDrawer(null)}
         type={evidenceDrawer}
-        dealName={demoDeal.name}
+        dealName={deal.name}
       />
     </div>
   );

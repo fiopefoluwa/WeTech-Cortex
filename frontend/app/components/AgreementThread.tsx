@@ -55,12 +55,11 @@ export default function AgreementThread({
               type="button"
               key={event.id}
               onClick={() => setDrawerOpen(true)}
-              className={`text-left rounded-xl border p-4 bg-white transition-all duration-150 flex flex-col justify-between min-h-[140px] cursor-pointer hover:shadow-md hover:-translate-y-0.5 group ${
+              className={`text-left rounded-xl border-r border-l p-4 bg-white transition-all duration-150 flex flex-col justify-between min-h-[140px] cursor-pointer hover:shadow-md hover:-translate-y-0.5 group ${
                 event.isHighlighted
-                  ? "border-[#1BCFB4] shadow-xs hover:border-[#1BCFB4] ring-2 ring-[#1BCFB4]/20"
+                  ? "border-[#1BCFB4]  hover:border-[#1BCFB4] ring-2"
                   : event.isCurrent
-                  ? "border-zinc-300 shadow-xs hover:border-zinc-400"
-                  : "border-zinc-200 hover:border-zinc-300"
+                  
               }`}
             >
               <div>

@@ -1,27 +1,50 @@
 "use client";
 
 import { useState } from "react";
+import { useParams } from "next/navigation";
 import DealHeader from "@/app/components/DealHeader";
+import { useDeal } from "@/app/context/DealContext";
 import {
-  demoDeal,
-  demoBrand,
-  demoCreator,
   demoActivityTimeline,
 } from "@/app/lib/demo-data";
+import type { ActivityTimelineItem } from "@/app/lib/types";
 import { ChevronRight, History } from "lucide-react";
 
 export default function ActivityPage() {
+  const params = useParams();
+  const dealId = (params?.dealId as string) || "1";
+  const { getDeal } = useDeal();
+  const deal = getDeal(dealId);
+  const isCustomDeal = String(deal.id) !== "1";
+
+  const customActivityTimeline: ActivityTimelineItem[] = [
+    {
+      id: "act-custom-1",
+      date: "TODAY",
+      title: `Deal Room Initialized: ${deal.name}`,
+      subtitle: `Agreement established between ${deal.brandName} and ${deal.creatorName} for ₦${deal.totalAmount.toLocaleString()}.`,
+    },
+    {
+      id: "act-custom-2",
+      date: "TODAY",
+      title: "Deliverables Defined",
+      subtitle: `Scope: ${deal.description}.`,
+    },
+  ];
+
+  const timelineToDisplay = isCustomDeal ? customActivityTimeline : demoActivityTimeline;
   const [isEmptyState, setIsEmptyState] = useState(false);
 
   return (
     <div className="pb-12">
       {/* Top Deal Header */}
       <DealHeader
-        dealName={demoDeal.name}
-        brandName={demoBrand.name}
-        creatorName={demoCreator.name}
-        status={demoDeal.status}
-        agreementUpdated={demoDeal.agreementUpdated}
+        dealName={deal.name}
+        brandName={deal.brandName}
+        creatorName={deal.creatorName}
+        status={deal.status}
+        agreementUpdated={deal.agreementUpdated}
+        dealId={dealId}
       />
 
       {/* Page Title Section */}
@@ -73,7 +96,7 @@ export default function ActivityPage() {
             <div className="absolute top-2.5 bottom-2.5 left-[11px] w-[2px] bg-zinc-200" />
 
             <div className="space-y-8">
-              {demoActivityTimeline.map((event) => (
+              {timelineToDisplay.map((event) => (
                 <div
                   key={event.id}
                   className="relative group cursor-pointer flex items-start justify-between gap-4"

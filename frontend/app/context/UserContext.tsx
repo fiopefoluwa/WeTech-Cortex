@@ -1,6 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
+import { api } from "@/app/lib/api";
 
 export type UserRole = "brand" | "creator";
 
@@ -40,7 +41,16 @@ interface UserContextType {
   role: UserRole;
   isLoggedIn: boolean;
   isHydrated: boolean;
-  login: (roleOrEmail: UserRole | string, password?: string) => { success: boolean; message?: string };
+  login: (
+    roleOrEmail: UserRole | string,
+    password?: string
+  ) => Promise<{ success: boolean; message?: string }>;
+  register: (data: {
+    name: string;
+    email: string;
+    password?: string;
+    role: UserRole;
+  }) => Promise<{ success: boolean; message?: string }>;
   logout: () => void;
   switchRole: () => void;
   backendStatus: "connected" | "checking" | "offline";
@@ -120,47 +130,180 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     }, 4000);
   };
 
-  const login = (roleOrEmail: UserRole | string, _password?: string) => {
-    void _password;
-    let selected: UserPersona;
-
-    if (roleOrEmail === "brand" || roleOrEmail === DEMO_ACCOUNTS.brand.email) {
-      selected = DEMO_ACCOUNTS.brand;
-    } else if (roleOrEmail === "creator" || roleOrEmail === DEMO_ACCOUNTS.creator.email) {
-      selected = DEMO_ACCOUNTS.creator;
-    } else if (typeof roleOrEmail === "string" && roleOrEmail.includes("@")) {
-      // Custom email login
-      const isBrandEmail = roleOrEmail.includes("brand") || roleOrEmail.includes("company");
-      const derivedRole: UserRole = isBrandEmail ? "brand" : "creator";
-      const namePart = roleOrEmail.split("@")[0];
-      const formattedName = namePart.charAt(0).toUpperCase() + namePart.slice(1);
-      selected = {
-        id: derivedRole === "brand" ? 1 : 2,
-        name: formattedName,
-        role: derivedRole,
-        email: roleOrEmail,
-        organization: derivedRole === "brand" ? `${formattedName} Co.` : `@${namePart}`,
-        title: derivedRole === "brand" ? "Account Manager" : "Independent Creator",
-        avatarBg: derivedRole === "brand" ? "bg-[#A05AFF] text-white" : "bg-[#1BCFB4] text-zinc-950 font-bold",
-      };
-    } else {
-      return { success: false, message: "Invalid email or role specified." };
-    }
-
-    setUser(selected);
+  const register = async (data: {
+    name: string;
+    email: string;
+    password?: string;
+    role: UserRole;
+  }): Promise<{ success: boolean; message?: string }> => {
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(selected));
+      const res = await api.auth.register({
+        name: data.name,
+        email: data.email,
+        password: data.password || "demo123",
+        role: data.role,
+      });
+
+      if (res.ok && res.data) {
+        if (typeof window !== "undefined") {
+          localStorage.setItem("Scope_token", res.data.access_token);
+        }
+        const bUser = res.data.user;
+        const newPersona: UserPersona = {
+          id: bUser.id,
+          name: bUser.name || data.name,
+          role: (bUser.role === "creator" ? "creator" : "brand") as UserRole,
+          email: bUser.email || data.email,
+          organization:
+            bUser.role === "creator" ? `@${(bUser.name || data.name).toLowerCase().replace(/\s+/g, "")}` : `${bUser.name || data.name} Co.`,
+          title: bUser.role === "creator" ? "Creator / Talent" : "Brand Director",
+          avatarBg:
+            bUser.role === "creator"
+              ? "bg-[#1BCFB4] text-zinc-950 font-bold"
+              : "bg-[#A05AFF] text-white",
+        };
+
+        setUser(newPersona);
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(newPersona));
+        } catch {
+          // Ignore
+        }
+        notify(`Welcome to Scope, ${newPersona.name}!`);
+        return { success: true };
+      }
+
+      // If backend gave a validation or conflict error (e.g. 400 user exists)
+      if (res.error && !res.error.includes("Failed to fetch") && !res.error.includes("abort")) {
+        return { success: false, message: res.error };
+      }
+
+      // If backend is offline or sleeping, register locally
+      const fallbackPersona: UserPersona = {
+        id: Math.floor(Math.random() * 900) + 10,
+        name: data.name,
+        role: data.role,
+        email: data.email,
+        organization: data.role === "creator" ? `@${data.name.toLowerCase().replace(/\s+/g, "")}` : `${data.name} Co.`,
+        title: data.role === "creator" ? "Creator / Talent" : "Brand Director",
+        avatarBg: data.role === "creator" ? "bg-[#1BCFB4] text-zinc-950 font-bold" : "bg-[#A05AFF] text-white",
+      };
+      setUser(fallbackPersona);
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(fallbackPersona));
+      } catch {
+        // Ignore
+      }
+      notify(`Welcome to Scope, ${fallbackPersona.name}!`);
+      return { success: true };
     } catch {
-      // Ignore
+      return { success: false, message: "Network connection error during sign up." };
     }
-    notify(`Signed in as ${selected.name} (${selected.role === "brand" ? "Brand" : "Creator"})`);
-    return { success: true };
+  };
+
+  const login = async (
+    roleOrEmail: UserRole | string,
+    password?: string
+  ): Promise<{ success: boolean; message?: string }> => {
+    // 1-Click demo accounts
+    if (roleOrEmail === "brand" || roleOrEmail === DEMO_ACCOUNTS.brand.email) {
+      setUser(DEMO_ACCOUNTS.brand);
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(DEMO_ACCOUNTS.brand));
+      } catch {
+        // Ignore
+      }
+      notify(`Signed in as ${DEMO_ACCOUNTS.brand.name} (Brand)`);
+      return { success: true };
+    }
+    if (roleOrEmail === "creator" || roleOrEmail === DEMO_ACCOUNTS.creator.email) {
+      setUser(DEMO_ACCOUNTS.creator);
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(DEMO_ACCOUNTS.creator));
+      } catch {
+        // Ignore
+      }
+      notify(`Signed in as ${DEMO_ACCOUNTS.creator.name} (Creator)`);
+      return { success: true };
+    }
+
+    // Attempt backend login
+    try {
+      const email = typeof roleOrEmail === "string" ? roleOrEmail.trim() : "";
+      const res = await api.auth.login({
+        email,
+        password: password || "demo123",
+      });
+
+      if (res.ok && res.data) {
+        if (typeof window !== "undefined") {
+          localStorage.setItem("Scope_token", res.data.access_token);
+        }
+        const bUser = res.data.user;
+        const persona: UserPersona = {
+          id: bUser.id,
+          name: bUser.name,
+          role: (bUser.role === "creator" ? "creator" : "brand") as UserRole,
+          email: bUser.email,
+          organization:
+            bUser.role === "creator" ? `@${bUser.name.toLowerCase().replace(/\s+/g, "")}` : `${bUser.name} Co.`,
+          title: bUser.role === "creator" ? "Creator / Talent" : "Brand Director",
+          avatarBg:
+            bUser.role === "creator"
+              ? "bg-[#1BCFB4] text-zinc-950 font-bold"
+              : "bg-[#A05AFF] text-white",
+        };
+        setUser(persona);
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(persona));
+        } catch {
+          // Ignore
+        }
+        notify(`Signed in as ${persona.name}`);
+        return { success: true };
+      }
+
+      // If backend returned explicit rejection (e.g. invalid credentials)
+      if (res.error && !res.error.includes("Failed to fetch") && !res.error.includes("abort")) {
+        return { success: false, message: res.error };
+      }
+
+      // Offline / fallback local sign in
+      if (typeof roleOrEmail === "string" && roleOrEmail.includes("@")) {
+        const isBrandEmail = roleOrEmail.includes("brand") || roleOrEmail.includes("company");
+        const derivedRole: UserRole = isBrandEmail ? "brand" : "creator";
+        const namePart = roleOrEmail.split("@")[0];
+        const formattedName = namePart.charAt(0).toUpperCase() + namePart.slice(1);
+        const fallback: UserPersona = {
+          id: derivedRole === "brand" ? 1 : 2,
+          name: formattedName,
+          role: derivedRole,
+          email: roleOrEmail,
+          organization: derivedRole === "brand" ? `${formattedName} Co.` : `@${namePart}`,
+          title: derivedRole === "brand" ? "Account Manager" : "Independent Creator",
+          avatarBg: derivedRole === "brand" ? "bg-[#A05AFF] text-white" : "bg-[#1BCFB4] text-zinc-950 font-bold",
+        };
+        setUser(fallback);
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(fallback));
+        } catch {
+          // Ignore
+        }
+        notify(`Signed in as ${fallback.name}`);
+        return { success: true };
+      }
+
+      return { success: false, message: "Invalid email or credentials." };
+    } catch {
+      return { success: false, message: "Network connection error while signing in." };
+    }
   };
 
   const logout = () => {
     setUser(null);
     try {
       localStorage.removeItem(STORAGE_KEY);
+      localStorage.removeItem("Scope_token");
     } catch {
       // Ignore
     }
@@ -195,6 +338,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
         isLoggedIn,
         isHydrated,
         login,
+        register,
         logout,
         switchRole,
         backendStatus,
