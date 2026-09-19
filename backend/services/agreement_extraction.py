@@ -51,7 +51,7 @@ def heuristic_extract_terms(text: str) -> AgreementTermCreate:
     """Smart regex heuristic fallback that parses real values out of agreement text."""
     # Deliverables
     deliverables = "3 TikTok videos"
-    deliv_match = re.search(r"deliverables?[:\s]+([^\n\r.]+)", text, re.I)
+    deliv_match = re.search(r"(?:deliverables?|deliverable\s*items?)[:\s]+(?:exactly\s+)?(\d+\s+[^(\n\r.]+)", text, re.I)
     if deliv_match:
         deliverables = deliv_match.group(1).strip()
     else:
@@ -77,7 +77,7 @@ def heuristic_extract_terms(text: str) -> AgreementTermCreate:
 
     # Revision limit
     revision_limit = 1
-    rev_match = re.search(r"(\d+)\s*(?:free\s*)?rounds?\s*of\s*revisions?|(\d+)\s*revisions?", text, re.I)
+    rev_match = re.search(r"(\d+)\s*(?:complimentary\s*|free\s*)?rounds?\s*of\s*revisions?|(\d+)\s*revisions?", text, re.I)
     if rev_match:
         try:
             revision_limit = int(rev_match.group(1) or rev_match.group(2))
@@ -86,26 +86,36 @@ def heuristic_extract_terms(text: str) -> AgreementTermCreate:
 
     # License duration
     license_duration = "30 days"
-    lic_match = re.search(r"(\d+\s*(?:days?|months?|weeks?|years?))", text, re.I)
+    lic_match = re.search(r"(?:duration\s+of|term\s+of|license\s+of|for\s+a\s+duration\s+of|active)\s+(\d+\s*(?:days?|months?|weeks?|years?))", text, re.I)
+    if not lic_match:
+        lic_match = re.search(r"(\d+[- ]*(?:days?|months?|weeks?|years?))\s*(?:duration|window|term|license|organic|commercial)", text, re.I)
     if lic_match:
-        license_duration = lic_match.group(1)
+        license_duration = lic_match.group(1).replace("-", " ")
+    else:
+        lic_fallback = re.search(r"(?:license|usage)\s+duration[:\s]+(\d+\s*(?:days?|months?|weeks?|years?))", text, re.I)
+        if lic_fallback:
+            license_duration = lic_fallback.group(1)
 
     # Platforms
     platforms = "TikTok + Instagram"
     found_platforms = []
     for p in ["TikTok", "Instagram", "YouTube", "Twitter", "LinkedIn", "Facebook"]:
-        if re.search(r"\b" + re.escape(p) + r"\b", text, re.I):
+        if re.search(r"(?:on|across|to|with)\s+" + re.escape(p), text, re.I):
             found_platforms.append(p)
     if found_platforms:
         platforms = " + ".join(found_platforms)
 
     # Scope
     scope = "Commercial creator campaign"
-    scope_match = re.search(r"scope[:\s]+([^\n\r.]+)", text, re.I)
-    if scope_match:
-        scope = scope_match.group(1).strip()
-    elif deliverables:
-        scope = f"Campaign deliverables: {deliverables}"
+    scope_action_match = re.search(r"(?:1\.1\s+)?The Creator agrees to\s+(?!provide such services)([^\n\r.]+)", text, re.I)
+    if scope_action_match:
+        scope = scope_action_match.group(1).strip()
+    else:
+        scope_field = re.search(r"(?:campaign\s+scope|project\s+scope|scope\s*description)[:\s]+([^\n\r.]+)", text, re.I)
+        if scope_field:
+            scope = scope_field.group(1).strip()
+        elif deliverables:
+            scope = f"Campaign deliverables: {deliverables}"
 
     return AgreementTermCreate(
         scope=scope,

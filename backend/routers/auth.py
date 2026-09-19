@@ -44,7 +44,7 @@ def login(login_data: UserLogin, session: Session = Depends(get_session)):
         # Check if this is a known demo account request and create it on the fly
         if "northstar" in login_data.email.lower() or "brand" in login_data.email.lower():
             user = User(
-                name="Northstar Coffee",
+                name="Nescafe Coffee",
                 email=login_data.email,
                 role="brand",
                 hashed_password=get_password_hash(login_data.password or "demo123"),
@@ -54,7 +54,7 @@ def login(login_data: UserLogin, session: Session = Depends(get_session)):
             session.refresh(user)
         elif "amara" in login_data.email.lower() or "creator" in login_data.email.lower():
             user = User(
-                name="Amara Okafor",
+                name="Amaka Moyinlola",
                 email=login_data.email,
                 role="creator",
                 hashed_password=get_password_hash(login_data.password or "demo123"),

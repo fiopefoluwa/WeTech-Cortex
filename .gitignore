@@ -36,6 +36,8 @@ Thumbs.db
 # Uploaded/test files
 uploads/
 *.pdf
+!sample_agreement.pdf
+!frontend/public/sample_agreement.pdf
 
 # Logs
 *.log

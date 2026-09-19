@@ -75,7 +75,7 @@ def seed_demo_data():
         brand_user = session.exec(select(User).where(User.email == "demo@northstar.com")).first()
         if not brand_user:
             brand_user = User(
-                name="Northstar Coffee",
+                name="Nescafe Coffee",
                 email="demo@northstar.com",
                 role="brand",
                 hashed_password=get_password_hash("demo123"),
@@ -85,7 +85,7 @@ def seed_demo_data():
         creator_user = session.exec(select(User).where(User.email == "amara@okafor.com")).first()
         if not creator_user:
             creator_user = User(
-                name="Amara Okafor",
+                name="Amaka Moyinlola",
                 email="amara@okafor.com",
                 role="creator",
                 hashed_password=get_password_hash("demo123"),
@@ -116,7 +116,7 @@ def seed_demo_data():
             # Agreement
             raw_agreement_text = """
 COMMERCIAL CREATOR AGREEMENT
-Parties: Northstar Coffee ("Brand") and Amara Okafor ("Creator")
+Parties: Nescafe Coffee ("Brand") and Amaka Moyinlola ("Creator")
 Scope: 3 TikTok videos highlighting seasonal cold brew products.
 Deliverables: 3 TikTok videos (60-90s, high-resolution vertical format).
 Total Compensation: ₦300,000 NGN payable upon milestone delivery.
