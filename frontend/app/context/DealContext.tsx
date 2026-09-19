@@ -3,6 +3,7 @@
 import React, { createContext, useContext, useState, useCallback, useMemo, useSyncExternalStore } from "react";
 import { api } from "@/app/lib/api";
 import { demoDeal, demoBrand, demoCreator } from "@/app/lib/demo-data";
+import type { ExtractedTerm } from "@/app/lib/types";
 
 export interface DealRoom {
   id: string;
@@ -17,6 +18,14 @@ export interface DealRoom {
   endDate?: string;
   agreementUpdated?: boolean;
   createdAt: string;
+  agreementFile?: {
+    name: string;
+    size: number;
+    uploadedAt: string;
+    type?: string;
+  };
+  extractedTerms?: ExtractedTerm[];
+  agreementText?: string;
 }
 
 export const DEFAULT_DEMO_DEAL: DealRoom = {
@@ -40,6 +49,7 @@ interface DealContextType {
   deals: DealRoom[];
   isHydrated: boolean;
   getDeal: (dealId: string | number) => DealRoom;
+  updateDeal: (dealId: string | number, updates: Partial<DealRoom>) => void;
   createDeal: (data: {
     name: string;
     brandName: string;
@@ -48,6 +58,14 @@ interface DealContextType {
     description: string;
     startDate?: string;
     endDate?: string;
+    agreementFile?: {
+      name: string;
+      size: number;
+      uploadedAt: string;
+      type?: string;
+    };
+    extractedTerms?: ExtractedTerm[];
+    agreementText?: string;
   }) => Promise<string>;
 }
 
@@ -114,6 +132,33 @@ export function DealProvider({ children }: { children: React.ReactNode }) {
     [allDeals]
   );
 
+  const updateDeal = useCallback(
+    (dealId: string | number, updates: Partial<DealRoom>) => {
+      const idStr = String(dealId);
+      setCustomDeals((prev) => {
+        const existingIndex = prev.findIndex((d) => String(d.id) === idStr);
+        let updated: DealRoom[];
+        if (existingIndex >= 0) {
+          const current = prev[existingIndex];
+          const merged: DealRoom = { ...current, ...updates };
+          updated = [...prev];
+          updated[existingIndex] = merged;
+        } else {
+          const base = allDeals.find((d) => String(d.id) === idStr) || DEFAULT_DEMO_DEAL;
+          const newEntry: DealRoom = { ...base, id: idStr, ...updates };
+          updated = [newEntry, ...prev.filter((d) => String(d.id) !== idStr)];
+        }
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+        } catch {
+          // Ignore storage errors
+        }
+        return updated;
+      });
+    },
+    [allDeals]
+  );
+
   const createDeal = async (data: {
     name: string;
     brandName: string;
@@ -122,6 +167,14 @@ export function DealProvider({ children }: { children: React.ReactNode }) {
     description: string;
     startDate?: string;
     endDate?: string;
+    agreementFile?: {
+      name: string;
+      size: number;
+      uploadedAt: string;
+      type?: string;
+    };
+    extractedTerms?: ExtractedTerm[];
+    agreementText?: string;
   }): Promise<string> => {
     let newId = String(Date.now()).slice(-4);
 
@@ -139,7 +192,9 @@ export function DealProvider({ children }: { children: React.ReactNode }) {
 
       if (res.ok && res.data?.id) {
         newId = String(res.data.id);
-        const rawAgreement = `Brand ${data.brandName} agrees to pay Creator ${data.creatorName} ${data.amount} Naira for ${data.description}.`;
+        const rawAgreement =
+          data.agreementText ||
+          `Brand ${data.brandName} agrees to pay Creator ${data.creatorName} ${data.amount} Naira for ${data.description}.`;
         api.agreements.create(Number(newId), rawAgreement).catch(() => {});
       }
     } catch {
@@ -159,6 +214,9 @@ export function DealProvider({ children }: { children: React.ReactNode }) {
       endDate: data.endDate || "",
       agreementUpdated: false,
       createdAt: new Date().toISOString(),
+      agreementFile: data.agreementFile,
+      extractedTerms: data.extractedTerms,
+      agreementText: data.agreementText,
     };
 
     setCustomDeals((prev) => {
@@ -180,6 +238,7 @@ export function DealProvider({ children }: { children: React.ReactNode }) {
         deals: allDeals,
         isHydrated,
         getDeal,
+        updateDeal,
         createDeal,
       }}
     >
@@ -211,6 +270,7 @@ export function useDeal() {
           id: String(dealId),
         };
       },
+      updateDeal: () => {},
       createDeal: async () => "1",
     };
   }

@@ -223,7 +223,7 @@ export default function DealRoomOverview({
 
       {/* Agreement Thread */}
       <section className="mb-6">
-        <AgreementThread events={displayEvents} />
+        <AgreementThread events={displayEvents} dealId={dealId} />
       </section>
 
       {/* Activity sections */}

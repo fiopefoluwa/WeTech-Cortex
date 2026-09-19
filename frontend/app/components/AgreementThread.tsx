@@ -8,11 +8,13 @@ import AgreementThreadDrawer from "./AgreementThreadDrawer";
 interface AgreementThreadProps {
   events: ThreadEvent[];
   showHeader?: boolean;
+  dealId?: string;
 }
 
 export default function AgreementThread({
   events,
   showHeader = true,
+  dealId = "1",
 }: AgreementThreadProps) {
   const [drawerOpen, setDrawerOpen] = useState(false);
 
@@ -42,6 +44,7 @@ export default function AgreementThread({
       <AgreementThreadDrawer
         isOpen={drawerOpen}
         onClose={() => setDrawerOpen(false)}
+        dealId={dealId}
       />
 
       {/* Timeline cards with connecting line */}
@@ -57,8 +60,8 @@ export default function AgreementThread({
               onClick={() => setDrawerOpen(true)}
               className={`text-left rounded-xl border-r border-l p-4 bg-white transition-all duration-150 flex flex-col justify-between min-h-[140px] cursor-pointer hover:shadow-md hover:-translate-y-0.5 group ${
                 event.isHighlighted
-                  ? "border-[#1BCFB4]  hover:border-[#1BCFB4] ring-2"
-                  : event.isCurrent
+                  ? "border-[#1BCFB4]  hover:border-[#1BCFB4]"
+                  :""
                   
               }`}
             >

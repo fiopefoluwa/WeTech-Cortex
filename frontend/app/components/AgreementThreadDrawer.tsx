@@ -2,13 +2,15 @@
 
 import { useEffect } from "react";
 import { X } from "lucide-react";
+import { useDeal } from "@/app/context/DealContext";
 
 interface AgreementThreadDrawerProps {
   isOpen: boolean;
   onClose: () => void;
+  dealId?: string;
 }
 
-const threadHistoryItems = [
+const defaultThreadHistoryItems = [
   {
     id: "item-1",
     tag: "SEPT 10 · ORIGINAL AGREEMENT",
@@ -38,7 +40,30 @@ const threadHistoryItems = [
 export default function AgreementThreadDrawer({
   isOpen,
   onClose,
+  dealId = "1",
 }: AgreementThreadDrawerProps) {
+  const { getDeal } = useDeal();
+  const deal = getDeal(dealId);
+  const isCustomDeal = String(deal.id) !== "1";
+
+  const items = isCustomDeal
+    ? [
+        {
+          id: "custom-item-1",
+          tag: deal.agreementFile
+            ? `DOCUMENT ATTACHED · ${deal.agreementFile.name.toUpperCase()}`
+            : "INITIAL AGREEMENT TERMS",
+          title: `${deal.description} · ₦${deal.totalAmount.toLocaleString()} total`,
+          isCurrent: false,
+        },
+        {
+          id: "custom-item-2",
+          tag: "CURRENT SCOPE GROUND TRUTH",
+          title: `${deal.name} · ${deal.brandName} & ${deal.creatorName}`,
+          isCurrent: true,
+        },
+      ]
+    : defaultThreadHistoryItems;
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
@@ -101,7 +126,7 @@ export default function AgreementThreadDrawer({
 
         {/* List of cards */}
         <div className="space-y-3">
-          {threadHistoryItems.map((item) => (
+          {items.map((item) => (
             <div
               key={item.id}
               className={`rounded-2xl p-4.5 bg-white transition-shadow ${
