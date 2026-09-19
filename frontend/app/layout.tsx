@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     "A shared workspace for brands and creators to manage agreements, communication, deliverables, licensing, and payments.",
   icons: {
     icon: [
-      { url: "/icon.svg", type: "image/svg+xml" },
+      { url: "/icon.svg", type: "image/svg+xml"},
     ],
     apple: [
       { url: "/apple-icon.svg", type: "image/svg+xml" },
