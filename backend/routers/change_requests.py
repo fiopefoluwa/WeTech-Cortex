@@ -1,7 +1,7 @@
 # routers/change_requests.py
 from typing import List
 from fastapi import APIRouter, Depends, HTTPException
-from sqlmodel import Session, select
+from sqlmodel import Session, select, col
 from core.database import get_session, to_dict
 from models.agreement import ChangeRequest, Deal, Agreement, AgreementTerm
 from schemas.agreement import ChangeRequestCreate
@@ -13,7 +13,7 @@ router = APIRouter(prefix="/change-requests", tags=["change-requests"])
 @router.get("/{deal_id}")
 def get_change_requests_by_deal(deal_id: int, session: Session = Depends(get_session)):
     requests = session.exec(
-        select(ChangeRequest).where(ChangeRequest.deal_id == deal_id).order_by(ChangeRequest.created_at.desc())
+        select(ChangeRequest).where(ChangeRequest.deal_id == deal_id).order_by(col(ChangeRequest.created_at).desc())
     ).all()
     return to_dict(requests)
 
@@ -62,7 +62,7 @@ def pay_change_request(cr_id: int, session: Session = Depends(get_session)):
 
     # 2. Update Agreement deliverables and price to reflect new agreed scope
     agreement = session.exec(
-        select(Agreement).where(Agreement.deal_id == cr.deal_id).order_by(Agreement.created_at.desc())
+        select(Agreement).where(Agreement.deal_id == cr.deal_id).order_by(col(Agreement.created_at).desc())
     ).first()
     if agreement:
         term = session.exec(

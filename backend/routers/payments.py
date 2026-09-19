@@ -1,7 +1,7 @@
 # routers/payments.py
 from typing import List
 from fastapi import APIRouter, Depends, HTTPException
-from sqlmodel import Session, select
+from sqlmodel import Session, select, col
 from core.database import get_session, to_dict
 from models.agreement import Payment, Deal, ChangeRequest, License, Agreement, AgreementTerm
 from schemas.agreement import PaymentCheckoutRequest
@@ -13,7 +13,7 @@ router = APIRouter(prefix="/payments", tags=["payments"])
 @router.get("/{deal_id}")
 def get_deal_payments(deal_id: int, session: Session = Depends(get_session)):
     payments = session.exec(
-        select(Payment).where(Payment.deal_id == deal_id).order_by(Payment.created_at.desc())
+        select(Payment).where(Payment.deal_id == deal_id).order_by(col(Payment.created_at).desc())
     ).all()
     return to_dict(payments)
 

@@ -1,7 +1,7 @@
 # routers/deliverables.py
 from typing import List, Dict, Any
 from fastapi import APIRouter, Depends, HTTPException
-from sqlmodel import Session, select
+from sqlmodel import Session, select, col
 from core.database import get_session, to_dict
 from models.agreement import Deliverable
 from schemas.agreement import DeliverableCreate, DeliverableSubmit, DeliverableRevise
@@ -13,7 +13,7 @@ router = APIRouter(prefix="/deliverables", tags=["deliverables"])
 @router.get("/{deal_id}")
 def get_deliverables(deal_id: int, session: Session = Depends(get_session)):
     deliverables = session.exec(
-        select(Deliverable).where(Deliverable.deal_id == deal_id).order_by(Deliverable.id)
+        select(Deliverable).where(Deliverable.deal_id == deal_id).order_by(col(Deliverable.id))
     ).all()
     return to_dict(deliverables)
 

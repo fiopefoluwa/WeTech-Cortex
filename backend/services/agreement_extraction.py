@@ -69,7 +69,7 @@ def extract_agreement_terms(agreement_text: str) -> AgreementTermCreate:
             contents=[EXTRACTION_PROMPT + agreement_text],
         )
 
-        raw_text = response.text.strip()
+        raw_text = (response.text or "").strip()
         raw_text = raw_text.replace("```json", "").replace("```", "").strip()
         data = json.loads(raw_text)
         return AgreementTermCreate(**data)

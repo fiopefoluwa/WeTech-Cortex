@@ -2,7 +2,7 @@
 from typing import List, Optional
 from datetime import datetime, timedelta
 from fastapi import APIRouter, Depends, HTTPException
-from sqlmodel import Session, select
+from sqlmodel import Session, select, col
 from core.database import get_session, to_dict
 from models.agreement import License, Content, UsageEventAudit, AgreementTerm, Agreement
 from schemas.agreement import (
@@ -24,7 +24,7 @@ def get_licensing_overview(deal_id: int, session: Session = Depends(get_session)
     audits = session.exec(
         select(UsageEventAudit)
         .where(UsageEventAudit.deal_id == deal_id)
-        .order_by(UsageEventAudit.created_at.desc())
+        .order_by(col(UsageEventAudit.created_at).desc())
     ).all()
 
     return {

@@ -1,7 +1,7 @@
 # routers/deals.py
 from typing import List
 from fastapi import APIRouter, Depends, HTTPException
-from sqlmodel import Session, select
+from sqlmodel import Session, select, col
 from core.database import get_session, to_dict
 from models.agreement import Deal
 from schemas.agreement import DealCreate
@@ -12,7 +12,7 @@ router = APIRouter(prefix="/deals", tags=["deals"])
 
 @router.get("/")
 def list_deals(session: Session = Depends(get_session)):
-    deals = session.exec(select(Deal).order_by(Deal.created_at.desc())).all()
+    deals = session.exec(select(Deal).order_by(col(Deal.created_at).desc())).all()
     return to_dict(deals)
 
 

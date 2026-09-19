@@ -1,10 +1,11 @@
 # core/database.py
 import os
+from typing import Dict, Any
 from sqlmodel import SQLModel, Session, create_engine
 from core.config import DATABASE_URL
 
 connect_args = {"check_same_thread": False} if "sqlite" in DATABASE_URL else {}
-engine_kwargs = {
+engine_kwargs: Dict[str, Any] = {
     "echo": False,
 }
 if "sqlite" not in DATABASE_URL:

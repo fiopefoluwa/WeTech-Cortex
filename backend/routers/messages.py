@@ -1,7 +1,7 @@
 # routers/messages.py
 from typing import List
 from fastapi import APIRouter, Depends, WebSocket, WebSocketDisconnect
-from sqlmodel import Session, select
+from sqlmodel import Session, select, col
 from core.database import get_session
 from models.agreement import Message, AgreementTerm, Agreement, User
 from schemas.agreement import MessageCreate
@@ -15,7 +15,7 @@ router = APIRouter(tags=["messages"])
 @router.get("/messages/{deal_id}", response_model=List[Message])
 def get_deal_messages(deal_id: int, session: Session = Depends(get_session)):
     messages = session.exec(
-        select(Message).where(Message.deal_id == deal_id).order_by(Message.created_at)
+        select(Message).where(Message.deal_id == deal_id).order_by(col(Message.created_at))
     ).all()
     return messages
 
@@ -23,7 +23,7 @@ def get_deal_messages(deal_id: int, session: Session = Depends(get_session)):
 @router.post("/messages/")
 async def send_message(msg: MessageCreate, session: Session = Depends(get_session)):
     agreement = session.exec(
-        select(Agreement).where(Agreement.deal_id == msg.deal_id).order_by(Agreement.created_at.desc())
+        select(Agreement).where(Agreement.deal_id == msg.deal_id).order_by(col(Agreement.created_at).desc())
     ).first()
 
     scope = "3 TikTok videos"

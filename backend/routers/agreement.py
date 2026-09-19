@@ -1,6 +1,6 @@
 # routers/agreement.py
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
-from sqlmodel import Session, select
+from sqlmodel import Session, select, col
 from core.database import get_session, to_dict
 from models.agreement import Agreement, AgreementTerm
 from services.agreement_extraction import extract_agreement_terms, extract_text_from_pdf_bytes
@@ -12,7 +12,7 @@ router = APIRouter(prefix="/agreements", tags=["agreements"])
 @router.get("/{deal_id}")
 def get_agreement_by_deal(deal_id: int, session: Session = Depends(get_session)):
     agreement = session.exec(
-        select(Agreement).where(Agreement.deal_id == deal_id).order_by(Agreement.created_at.desc())
+        select(Agreement).where(Agreement.deal_id == deal_id).order_by(col(Agreement.created_at).desc())
     ).first()
     if not agreement:
         raise HTTPException(status_code=404, detail="Agreement not found for this deal.")

@@ -79,7 +79,7 @@ def audit_usage_event(
             contents=[prompt],
         )
 
-        raw_text = response.text.strip()
+        raw_text = (response.text or "").strip()
         raw_text = raw_text.replace("```json", "").replace("```", "").strip()
         return json.loads(raw_text)
     except Exception as e:
