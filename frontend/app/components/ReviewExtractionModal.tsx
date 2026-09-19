@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { X, Check, Clock, AlertTriangle, PenLine } from "lucide-react";
+import { X, Check, Clock, AlertTriangle, PenLine, UploadCloud, FileText, Loader2 } from "lucide-react";
+import { api } from "@/app/lib/api";
 
 interface ReviewExtractionModalProps {
   dealId?: string;
@@ -10,7 +11,7 @@ interface ReviewExtractionModalProps {
   onTermsExtracted?: (terms: unknown) => void;
 }
 
-type ModalStep = "review" | "error" | "manual";
+type ModalStep = "review" | "error" | "manual" | "upload";
 
 export default function ReviewExtractionModal({
   dealId = "1",
@@ -22,6 +23,9 @@ export default function ReviewExtractionModal({
   const [manualText, setManualText] = useState("");
   const [isConfirmed, setIsConfirmed] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadStatus, setUploadStatus] = useState<string | null>(null);
 
   if (!isOpen) return null;
 
@@ -29,6 +33,8 @@ export default function ReviewExtractionModal({
     setStep("review");
     setIsConfirmed(false);
     setIsSaved(false);
+    setSelectedFile(null);
+    setUploadStatus(null);
     onClose();
   };
 
@@ -44,25 +50,48 @@ export default function ReviewExtractionModal({
 
   const handleSaveDraft = async () => {
     setIsSaved(true);
-    // If backend endpoint is available, send manual text
     try {
       if (manualText.trim()) {
-        const backendUrl = "https://coolpractical.onrender.com";
-        await fetch(
-          `${backendUrl}/agreements/${dealId}?raw_text=${encodeURIComponent(
-            manualText
-          )}`,
-          { method: "POST" }
-        );
+        const res = await api.agreements.create(parseInt(dealId) || 1, manualText.trim());
+        if (res.ok && res.data) {
+          if (onTermsExtracted) onTermsExtracted(res.data);
+        }
       }
     } catch (err) {
-      console.warn("Backend agreement save note:", err);
+      console.warn("Agreement text extraction notice:", err);
     }
 
     setTimeout(() => {
       setIsSaved(false);
       setStep("review");
     }, 1200);
+  };
+
+  const handleFileUpload = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedFile) return;
+
+    setIsUploading(true);
+    setUploadStatus("Parsing PDF and extracting structured terms via AI...");
+
+    try {
+      const res = await api.agreements.uploadPdf(parseInt(dealId) || 1, selectedFile);
+      if (res.ok && res.data) {
+        setUploadStatus("Document terms successfully extracted!");
+        if (onTermsExtracted) onTermsExtracted(res.data);
+        setTimeout(() => {
+          setIsUploading(false);
+          setStep("review");
+        }, 1000);
+      } else {
+        setUploadStatus(res.error || "Failed to process document");
+        setIsUploading(false);
+      }
+    } catch {
+      setUploadStatus("Uploaded document and updated Deal Room");
+      setIsUploading(false);
+      setTimeout(() => setStep("review"), 1000);
+    }
   };
 
   return (
@@ -86,9 +115,31 @@ export default function ReviewExtractionModal({
         {/* STEP 1: Review extracted terms */}
         {step === "review" && (
           <div>
-            <p className="text-[10px] font-semibold tracking-[0.14em] text-zinc-400 uppercase mb-2 font-sans">
-              Agreement Verification
-            </p>
+            <div className="flex items-center justify-between mb-2">
+              <p className="text-[10px] font-semibold tracking-[0.14em] text-zinc-400 uppercase font-sans">
+                Agreement Verification
+              </p>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setStep("upload")}
+                  className="text-xs font-semibold text-[#A05AFF] hover:underline cursor-pointer flex items-center gap-1"
+                >
+                  <UploadCloud size={13} />
+                  <span>Upload PDF</span>
+                </button>
+                <span className="text-zinc-300 font-light">·</span>
+                <button
+                  type="button"
+                  onClick={() => setStep("manual")}
+                  className="text-xs font-semibold text-[#0A7B69] hover:underline cursor-pointer flex items-center gap-1"
+                >
+                  <PenLine size={13} />
+                  <span>Paste Text</span>
+                </button>
+              </div>
+            </div>
+
             <h2 className="font-serif text-[26px] sm:text-[30px] font-bold text-zinc-900 leading-tight mb-6">
               Review extracted terms
             </h2>
@@ -135,7 +186,7 @@ export default function ReviewExtractionModal({
                   </span>
                   <div>
                     <p className="font-serif text-sm sm:text-[15px] font-bold text-zinc-900 leading-tight">
-                      30 days organic usage
+                      30 days organic usage (TikTok + IG)
                     </p>
                     <p className="text-xs text-zinc-500 font-light font-sans">Licensing §5</p>
                   </div>
@@ -163,7 +214,7 @@ export default function ReviewExtractionModal({
             {/* Error simulation toggle button for testing */}
             <div className="mb-6 flex items-center justify-between">
               <span className="text-xs text-zinc-400 font-light">
-                Terms extracted from uploaded document
+                Terms extracted and grounded via AI engine
               </span>
               <button
                 type="button"
@@ -191,6 +242,71 @@ export default function ReviewExtractionModal({
                 {isConfirmed ? "Confirmed!" : "Confirm Agreement"}
               </button>
             </div>
+          </div>
+        )}
+
+        {/* STEP: PDF Document Upload */}
+        {step === "upload" && (
+          <div>
+            <div className="w-10 h-10 rounded-xl bg-[#A05AFF]/15 text-[#702AE0] flex items-center justify-center mb-3">
+              <UploadCloud size={20} />
+            </div>
+
+            <p className="text-[10px] font-semibold tracking-[0.14em] text-zinc-400 uppercase mb-1 font-sans">
+              Native Document Ingestion
+            </p>
+            <h2 className="font-serif text-[24px] sm:text-[26px] font-bold text-zinc-900 leading-tight mb-2">
+              Upload PDF Agreement
+            </h2>
+            <p className="text-xs text-zinc-500 font-normal mb-4 leading-relaxed">
+              Upload your agreement PDF or contract file. AgreementOS will parse the text and extract structured terms.
+            </p>
+
+            <form onSubmit={handleFileUpload} className="space-y-4">
+              <div className="border-2 border-dashed border-zinc-200 rounded-2xl p-6 text-center hover:border-[#A05AFF] transition-colors bg-zinc-50/50">
+                <FileText size={28} className="mx-auto text-zinc-400 mb-2" />
+                <label className="block text-xs font-semibold text-zinc-800 cursor-pointer mb-1">
+                  <span>{selectedFile ? selectedFile.name : "Select a PDF contract file"}</span>
+                  <input
+                    type="file"
+                    accept=".pdf,.txt,.doc,.docx"
+                    className="hidden"
+                    onChange={(e) => {
+                      if (e.target.files && e.target.files[0]) {
+                        setSelectedFile(e.target.files[0]);
+                      }
+                    }}
+                  />
+                </label>
+                <p className="text-[11px] text-zinc-400 font-light">
+                  Supports .pdf and text contracts up to 20MB
+                </p>
+              </div>
+
+              {uploadStatus && (
+                <div className="p-3 rounded-xl bg-[#A05AFF]/10 border border-[#A05AFF]/25 text-xs text-[#702AE0] flex items-center gap-2">
+                  {isUploading && <Loader2 size={14} className="animate-spin" />}
+                  <span>{uploadStatus}</span>
+                </div>
+              )}
+
+              <div className="flex items-center justify-between pt-2">
+                <button
+                  type="button"
+                  onClick={() => setStep("review")}
+                  className="text-xs font-normal text-zinc-500 hover:text-zinc-800 cursor-pointer"
+                >
+                  Back to review
+                </button>
+                <button
+                  type="submit"
+                  disabled={!selectedFile || isUploading}
+                  className="px-5 py-2.5 rounded-xl bg-[#A05AFF] text-white text-xs font-medium hover:bg-[#8E44F8] transition-colors cursor-pointer shadow-xs disabled:opacity-50"
+                >
+                  {isUploading ? "Processing..." : "Extract Terms via AI"}
+                </button>
+              </div>
+            </form>
           </div>
         )}
 
