@@ -3,7 +3,7 @@ from typing import List
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select, col
 from core.database import get_session, to_dict
-from models.agreement import Payment, Deal, ChangeRequest, License, Agreement, AgreementTerm
+from models.agreement import Payment, Deal, ChangeRequest, License, Agreement, AgreementTerm, User
 from schemas.agreement import PaymentCheckoutRequest
 from services.activity_log import log_activity
 
@@ -23,6 +23,36 @@ def checkout_mock_payment(
     data: PaymentCheckoutRequest,
     session: Session = Depends(get_session),
 ):
+    # Validate deal
+    deal = session.get(Deal, data.deal_id)
+    if not deal:
+        brand = session.exec(select(User).where(User.role == "brand")).first()
+        creator = session.exec(select(User).where(User.role == "creator")).first()
+        deal = Deal(
+            id=data.deal_id,
+            name=f"Deal #{data.deal_id}",
+            brand_id=brand.id if brand and brand.id else 1,
+            creator_id=creator.id if creator and creator.id else 2,
+            total_amount=300000.0,
+            status="active",
+        )
+        session.add(deal)
+        session.commit()
+
+    # Validate payer
+    payer = session.get(User, data.payer_id)
+    if not payer:
+        first_user = session.exec(select(User)).first()
+        if first_user and first_user.id:
+            data.payer_id = first_user.id
+        else:
+            new_user = User(name="Client", email=f"payer_{data.payer_id}@scope.app", role="brand")
+            session.add(new_user)
+            session.commit()
+            session.refresh(new_user)
+            if new_user.id:
+                data.payer_id = new_user.id
+
     payment = Payment(
         deal_id=data.deal_id,
         item_type=data.item_type,

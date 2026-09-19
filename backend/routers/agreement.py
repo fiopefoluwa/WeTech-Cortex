@@ -1,12 +1,36 @@
-# routers/agreement.py
-from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
-from sqlmodel import Session, select, col
+from typing import Optional
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Query
+from sqlmodel import Session, select, col, SQLModel
 from core.database import get_session, to_dict
-from models.agreement import Agreement, AgreementTerm
+from models.agreement import Agreement, AgreementTerm, Deal, User
 from services.agreement_extraction import extract_agreement_terms, extract_text_from_pdf_bytes
 from services.activity_log import log_activity
 
 router = APIRouter(prefix="/agreements", tags=["agreements"])
+
+
+class AgreementTextPayload(SQLModel):
+    raw_text: Optional[str] = None
+
+
+def ensure_deal_exists(session: Session, deal_id: int) -> Deal:
+    deal = session.get(Deal, deal_id)
+    if not deal:
+        brand = session.exec(select(User).where(User.role == "brand")).first()
+        creator = session.exec(select(User).where(User.role == "creator")).first()
+        deal = Deal(
+            id=deal_id,
+            name=f"Deal #{deal_id}",
+            brand_id=brand.id if brand and brand.id else 1,
+            creator_id=creator.id if creator and creator.id else 2,
+            total_amount=300000.0,
+            status="active",
+            description="Campaign agreement",
+        )
+        session.add(deal)
+        session.commit()
+        session.refresh(deal)
+    return deal
 
 
 @router.get("/{deal_id}")
@@ -30,22 +54,28 @@ def get_agreement_by_deal(deal_id: int, session: Session = Depends(get_session))
 @router.post("/{deal_id}")
 def create_agreement_from_text(
     deal_id: int,
-    raw_text: str,
+    raw_text: Optional[str] = Query(None),
+    payload: Optional[AgreementTextPayload] = None,
     session: Session = Depends(get_session),
 ):
-    agreement = Agreement(deal_id=deal_id, raw_text=raw_text)
+    text = (payload.raw_text if payload and payload.raw_text else raw_text) or ""
+    if not text.strip():
+        raise HTTPException(status_code=400, detail="Agreement text is required.")
+
+    ensure_deal_exists(session, deal_id)
+
+    agreement = Agreement(deal_id=deal_id, raw_text=text)
     session.add(agreement)
     session.commit()
     session.refresh(agreement)
     agreement_id = agreement.id
 
-    extracted = extract_agreement_terms(raw_text)
+    extracted = extract_agreement_terms(text)
 
     term = AgreementTerm(agreement_id=agreement_id, **extracted.dict())
     session.add(term)
     session.commit()
     session.refresh(term)
-    term_id = term.id
 
     log_activity(session, deal_id, "Agreement ingested and terms extracted via AI")
 
@@ -61,6 +91,7 @@ async def upload_agreement_file(
     file: UploadFile = File(...),
     session: Session = Depends(get_session),
 ):
+    ensure_deal_exists(session, deal_id)
     content_bytes = await file.read()
     filename = file.filename.lower() if file.filename else ""
 

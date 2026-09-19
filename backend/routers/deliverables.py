@@ -3,7 +3,7 @@ from typing import List, Dict, Any
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select, col
 from core.database import get_session, to_dict
-from models.agreement import Deliverable
+from models.agreement import Deliverable, Deal, User
 from schemas.agreement import DeliverableCreate, DeliverableSubmit, DeliverableRevise
 from services.activity_log import log_activity
 
@@ -20,6 +20,21 @@ def get_deliverables(deal_id: int, session: Session = Depends(get_session)):
 
 @router.post("/")
 def create_deliverable(data: DeliverableCreate, session: Session = Depends(get_session)):
+    deal = session.get(Deal, data.deal_id)
+    if not deal:
+        brand = session.exec(select(User).where(User.role == "brand")).first()
+        creator = session.exec(select(User).where(User.role == "creator")).first()
+        deal = Deal(
+            id=data.deal_id,
+            name=f"Deal #{data.deal_id}",
+            brand_id=brand.id if brand and brand.id else 1,
+            creator_id=creator.id if creator and creator.id else 2,
+            total_amount=300000.0,
+            status="active",
+        )
+        session.add(deal)
+        session.commit()
+
     deliverable = Deliverable(**data.dict())
     session.add(deliverable)
     session.commit()

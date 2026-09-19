@@ -2,6 +2,7 @@
 import io
 import os
 import json
+import re
 from google import genai
 from dotenv import load_dotenv
 from pypdf import PdfReader
@@ -46,22 +47,84 @@ def extract_text_from_pdf_bytes(pdf_bytes: bytes) -> str:
     return "\n".join(extracted_text)
 
 
+def heuristic_extract_terms(text: str) -> AgreementTermCreate:
+    """Smart regex heuristic fallback that parses real values out of agreement text."""
+    # Deliverables
+    deliverables = "3 TikTok videos"
+    deliv_match = re.search(r"deliverables?[:\s]+([^\n\r.]+)", text, re.I)
+    if deliv_match:
+        deliverables = deliv_match.group(1).strip()
+    else:
+        cnt_match = re.search(r"(\d+)\s+(?:TikTok|Instagram|YouTube|Reels?|posts?|videos?|UGC|shorts?)[^\n\r.,]*", text, re.I)
+        if cnt_match:
+            deliverables = cnt_match.group(0).strip()
+
+    # Price
+    price = 300000.0
+    price_match = re.search(r"(?:₦|NGN|Naira|\$)\s*([\d,]+(?:\.\d+)?)", text, re.I)
+    if price_match:
+        try:
+            price = float(price_match.group(1).replace(",", ""))
+        except ValueError:
+            pass
+    else:
+        num_match = re.search(r"(?:total|compensation|fee|amount|rate)[:\s]+(?:₦|NGN|Naira|\$)?\s*([\d,]+)", text, re.I)
+        if num_match:
+            try:
+                price = float(num_match.group(1).replace(",", ""))
+            except ValueError:
+                pass
+
+    # Revision limit
+    revision_limit = 1
+    rev_match = re.search(r"(\d+)\s*(?:free\s*)?rounds?\s*of\s*revisions?|(\d+)\s*revisions?", text, re.I)
+    if rev_match:
+        try:
+            revision_limit = int(rev_match.group(1) or rev_match.group(2))
+        except (ValueError, TypeError):
+            pass
+
+    # License duration
+    license_duration = "30 days"
+    lic_match = re.search(r"(\d+\s*(?:days?|months?|weeks?|years?))", text, re.I)
+    if lic_match:
+        license_duration = lic_match.group(1)
+
+    # Platforms
+    platforms = "TikTok + Instagram"
+    found_platforms = []
+    for p in ["TikTok", "Instagram", "YouTube", "Twitter", "LinkedIn", "Facebook"]:
+        if re.search(r"\b" + re.escape(p) + r"\b", text, re.I):
+            found_platforms.append(p)
+    if found_platforms:
+        platforms = " + ".join(found_platforms)
+
+    # Scope
+    scope = "Commercial creator campaign"
+    scope_match = re.search(r"scope[:\s]+([^\n\r.]+)", text, re.I)
+    if scope_match:
+        scope = scope_match.group(1).strip()
+    elif deliverables:
+        scope = f"Campaign deliverables: {deliverables}"
+
+    return AgreementTermCreate(
+        scope=scope,
+        deliverables=deliverables,
+        price=price,
+        revision_limit=revision_limit,
+        deadline="14 days from contract signing",
+        payment_terms="50% deposit, 50% upon final delivery",
+        platforms=platforms,
+        usage_rights="Organic usage only",
+        license_duration=license_duration,
+        geographic_restrictions="Worldwide",
+        exclusivity="Category exclusivity for active license duration",
+    )
+
+
 def extract_agreement_terms(agreement_text: str) -> AgreementTermCreate:
     if not client:
-        # High quality fallback if API key is not configured
-        return AgreementTermCreate(
-            scope="3 TikTok videos with seasonal theme",
-            deliverables="3 TikTok videos",
-            price=300000.0,
-            revision_limit=1,
-            deadline="14 days from contract signing",
-            payment_terms="50% deposit, 50% upon final delivery",
-            platforms="TikTok + Instagram",
-            usage_rights="Organic usage only",
-            license_duration="30 days",
-            geographic_restrictions="Worldwide",
-            exclusivity="Coffee category exclusivity for 30 days",
-        )
+        return heuristic_extract_terms(agreement_text)
 
     try:
         response = client.models.generate_content(
@@ -74,17 +137,5 @@ def extract_agreement_terms(agreement_text: str) -> AgreementTermCreate:
         data = json.loads(raw_text)
         return AgreementTermCreate(**data)
     except Exception as e:
-        print(f"Gemini extraction error ({e}), using structured baseline fallback.")
-        return AgreementTermCreate(
-            scope="Creator partnership campaign",
-            deliverables="3 TikTok videos",
-            price=300000.0,
-            revision_limit=1,
-            deadline="30 days",
-            payment_terms="Milestone disbursements upon approval",
-            platforms="TikTok + Instagram",
-            usage_rights="Organic usage only",
-            license_duration="30 days",
-            geographic_restrictions="Worldwide",
-            exclusivity="Non-exclusive",
-        )
+        print(f"Gemini extraction notice ({e}), using intelligent heuristic fallback.")
+        return heuristic_extract_terms(agreement_text)

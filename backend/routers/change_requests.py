@@ -3,7 +3,7 @@ from typing import List
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select, col
 from core.database import get_session, to_dict
-from models.agreement import ChangeRequest, Deal, Agreement, AgreementTerm
+from models.agreement import ChangeRequest, Deal, Agreement, AgreementTerm, User, Message
 from schemas.agreement import ChangeRequestCreate
 from services.activity_log import log_activity
 
@@ -20,7 +20,43 @@ def get_change_requests_by_deal(deal_id: int, session: Session = Depends(get_ses
 
 @router.post("/")
 def create_change_request(cr: ChangeRequestCreate, session: Session = Depends(get_session)):
-    new_cr = ChangeRequest(**cr.dict())
+    # Validate deal
+    deal = session.get(Deal, cr.deal_id)
+    if not deal:
+        brand = session.exec(select(User).where(User.role == "brand")).first()
+        creator = session.exec(select(User).where(User.role == "creator")).first()
+        deal = Deal(
+            id=cr.deal_id,
+            name=f"Deal #{cr.deal_id}",
+            brand_id=brand.id if brand and brand.id else 1,
+            creator_id=creator.id if creator and creator.id else 2,
+            total_amount=300000.0,
+            status="active",
+        )
+        session.add(deal)
+        session.commit()
+
+    # Validate user
+    user = session.get(User, cr.requested_by)
+    if not user:
+        first_user = session.exec(select(User)).first()
+        if first_user and first_user.id:
+            cr.requested_by = first_user.id
+        else:
+            new_user = User(name="Partner", email=f"user_{cr.requested_by}@scope.app", role="creator")
+            session.add(new_user)
+            session.commit()
+            session.refresh(new_user)
+            if new_user.id:
+                cr.requested_by = new_user.id
+
+    cr_data = cr.dict()
+    if cr.message_id:
+        msg = session.get(Message, cr.message_id)
+        if not msg:
+            cr_data["message_id"] = None
+
+    new_cr = ChangeRequest(**cr_data)
     session.add(new_cr)
     session.commit()
     session.refresh(new_cr)

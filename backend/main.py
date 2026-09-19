@@ -1,4 +1,5 @@
 # main.py
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from sqlmodel import Session, select
@@ -30,16 +31,26 @@ from routers import (
     users,
 )
 
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    create_db_and_tables()
+    seed_demo_data()
+    yield
+
+
 app = FastAPI(
     title="Scope API",
     description="The Operating System for Creator Partnerships, Real-Time Scope Auditing, and Commercial Rights",
     version="2.0.0",
+    lifespan=lifespan,
 )
 
-# Enable CORS for all frontends
+# Enable CORS for all frontends and development environments
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
+    allow_origin_regex=r"https?://.*",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -218,10 +229,14 @@ Exclusivity: Category exclusivity for coffee/beverage brands during active 30-da
             session.commit()
 
 
-@app.on_event("startup")
-def on_startup():
-    create_db_and_tables()
-    seed_demo_data()
+@app.head("/")
+def root_head():
+    return {"status": "healthy"}
+
+
+@app.get("/health")
+def health_check():
+    return {"status": "ok"}
 
 
 @app.get("/")

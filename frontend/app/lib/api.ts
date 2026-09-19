@@ -1,4 +1,25 @@
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "https://coolpractical.onrender.com";
+const DEFAULT_REMOTE_URL = "https://coolpractical.onrender.com";
+const LOCAL_DEV_URL = "http://localhost:8000";
+
+let activeBaseUrl: string | null = null;
+
+export function getApiBaseUrl(): string {
+  if (process.env.NEXT_PUBLIC_API_URL) {
+    return process.env.NEXT_PUBLIC_API_URL;
+  }
+  if (activeBaseUrl) {
+    return activeBaseUrl;
+  }
+  if (typeof window !== "undefined") {
+    const isLocal =
+      window.location.hostname === "localhost" ||
+      window.location.hostname === "127.0.0.1";
+    if (isLocal) {
+      return LOCAL_DEV_URL;
+    }
+  }
+  return DEFAULT_REMOTE_URL;
+}
 
 export interface ApiResponse<T> {
   ok: boolean;
@@ -8,15 +29,13 @@ export interface ApiResponse<T> {
 }
 
 /**
- * Robust fetch wrapper with timeout and standardized error handling.
+ * Robust fetch wrapper with automatic local/remote fallback, timeout, and standardized error handling.
  */
 async function safeRequest<T>(
   endpoint: string,
   options?: RequestInit & { timeoutMs?: number }
 ): Promise<ApiResponse<T>> {
   const timeoutMs = options?.timeoutMs ?? 15000;
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
   // Retrieve auth token from localStorage if available
   let authHeader = {};
@@ -27,21 +46,48 @@ async function safeRequest<T>(
     }
   }
 
+  const isFormData = options?.body instanceof FormData;
+  const headers: Record<string, string> = {
+    ...(!isFormData ? { "Content-Type": "application/json" } : {}),
+    ...authHeader,
+    ...(options?.headers as Record<string, string>),
+  };
+
+  const primaryBase = getApiBaseUrl();
+  const secondaryBase =
+    primaryBase === LOCAL_DEV_URL ? DEFAULT_REMOTE_URL : null;
+
+  const tryFetch = async (baseUrl: string) => {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+    try {
+      const res = await fetch(`${baseUrl}${endpoint}`, {
+        headers,
+        signal: controller.signal,
+        ...options,
+      });
+      clearTimeout(timeoutId);
+      return res;
+    } catch (err) {
+      clearTimeout(timeoutId);
+      throw err;
+    }
+  };
+
+  let res: Response;
   try {
-    const isFormData = options?.body instanceof FormData;
-    const headers: Record<string, string> = {
-      ...(!isFormData ? { "Content-Type": "application/json" } : {}),
-      ...authHeader,
-      ...(options?.headers as Record<string, string>),
-    };
-
-    const res = await fetch(`${BASE_URL}${endpoint}`, {
-      headers,
-      signal: controller.signal,
-      ...options,
-    });
-
-    clearTimeout(timeoutId);
+    try {
+      res = await tryFetch(primaryBase);
+      activeBaseUrl = primaryBase;
+    } catch (primaryErr) {
+      if (secondaryBase) {
+        // Fall back seamlessly to production cloud backend
+        res = await tryFetch(secondaryBase);
+        activeBaseUrl = secondaryBase;
+      } else {
+        throw primaryErr;
+      }
+    }
 
     if (!res.ok) {
       let errorMsg = `Server error (${res.status} ${res.statusText})`;
@@ -62,7 +108,6 @@ async function safeRequest<T>(
     const data = (await res.json()) as T;
     return { ok: true, data, statusCode: res.status };
   } catch (err: unknown) {
-    clearTimeout(timeoutId);
     if (err instanceof Error && err.name === "AbortError") {
       return {
         ok: false,
@@ -184,7 +229,7 @@ export const api = {
         timeoutMs: 30000,
       }),
     getWebSocketUrl: (dealId: number) => {
-      const host = BASE_URL.replace(/^http/, "ws");
+      const host = getApiBaseUrl().replace(/^http/, "ws");
       return `${host}/ws/deals/${dealId}`;
     },
   },
