@@ -12,7 +12,7 @@ Key capabilities include:
 - Structured contract term cards extracted from legal documents.
 - Real-time scope auditing using Gemini AI to identify uncontracted requests in chat.
 - RightsGuard commercial licensing tracker for digital asset usage and renewals.
-- Dual-persona simulation allowing instant switching between Brand (`Northstar Coffee`) and Creator (`Amara Okafor`) perspectives.
+- Dual-persona simulation allowing instant switching between Brand (`Nescafe Coffee`) and Creator (`Amaka Moyinlola`) perspectives.
 
 ---
 
@@ -55,7 +55,7 @@ Protected routes are nested under `/deals/[dealId]` and guarded by `AuthGuard`:
 Session state is managed globally through `UserContext.tsx`:
 - **Hydration Safety**: Persisted in `localStorage` under `Scope_active_persona`.
 - **Zero-Flash AuthGuard**: Protected routes display a loading spinner until hydration resolves, preventing unauthorized layout flashing.
-- **Dynamic Perspective Switching**: Toggle between `brand` (`Northstar Coffee`) and `creator` (`Amara Okafor`) in real time.
+- **Dynamic Perspective Switching**: Toggle between `brand` (`Nescafe Coffee`) and `creator` (`Amaka Moyinlola`) in real time.
 
 ---
 

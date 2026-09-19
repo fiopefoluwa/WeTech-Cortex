@@ -73,13 +73,13 @@ export default function MessagesPage() {
       content: textToSend,
       ...(localOutOfScope
         ? {
-            isScopeChangeDetected: true,
-            scopeChangeBadgeText: "Potential scope adjustment flagged",
-            contextRef: {
-              clause: "Deliverables §2",
-              text: "“3 TikTok videos”",
-            },
-          }
+          isScopeChangeDetected: true,
+          scopeChangeBadgeText: "Potential scope adjustment flagged",
+          contextRef: {
+            clause: "Deliverables §2",
+            text: "“3 TikTok videos”",
+          },
+        }
         : {}),
     };
 
@@ -102,16 +102,16 @@ export default function MessagesPage() {
             prev.map((m) =>
               m.id === tempMsgId
                 ? {
-                    ...m,
-                    isScopeChangeDetected: true,
-                    scopeChangeBadgeText: `Scope adjustment flagged: +₦${Number(
-                      analysis.estimated_fee || 40000
-                    ).toLocaleString()}`,
-                    contextRef: {
-                      clause: "Deliverables §2",
-                      text: analysis.reason || "“3 TikTok videos”",
-                    },
-                  }
+                  ...m,
+                  isScopeChangeDetected: true,
+                  scopeChangeBadgeText: `Scope adjustment flagged: +₦${Number(
+                    analysis.estimated_fee || 40000
+                  ).toLocaleString()}`,
+                  contextRef: {
+                    clause: "Deliverables §2",
+                    text: analysis.reason || "“3 TikTok videos”",
+                  },
+                }
                 : m
             )
           );
@@ -122,10 +122,10 @@ export default function MessagesPage() {
             prev.map((m) =>
               m.id === tempMsgId
                 ? {
-                    ...m,
-                    isScopeChangeDetected: false,
-                    scopeChangeBadgeText: undefined,
-                  }
+                  ...m,
+                  isScopeChangeDetected: false,
+                  scopeChangeBadgeText: undefined,
+                }
                 : m
             )
           );
@@ -171,9 +171,8 @@ export default function MessagesPage() {
         {/* Active persona status */}
         <div className="flex items-center gap-2.5 bg-white border border-zinc-200 px-4 py-2 rounded-xl shadow-2xs">
           <span
-            className={`w-2 h-2 rounded-full ${
-              role === "brand" ? "bg-[#A05AFF]" : "bg-[#1BCFB4]"
-            }`}
+            className={`w-2 h-2 rounded-full ${role === "brand" ? "bg-[#A05AFF]" : "bg-[#1BCFB4]"
+              }`}
           />
           <span className="text-xs text-zinc-600 font-normal">
             Chatting as:{" "}
@@ -199,7 +198,7 @@ export default function MessagesPage() {
             <div>
               <div className="flex items-center gap-2.5">
                 <h2 className="font-serif text-base sm:text-lg font-bold text-zinc-900 leading-tight">
-                  Northstar Coffee × Amara Okafor
+                  Nescafe Coffee × Amaka Moyinlola
                 </h2>
                 <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-[#1BCFB4]/15 text-[#0A7B69] border border-[#1BCFB4]/35">
                   <CheckCircle2 size={11} className="text-[#0A7B69]" />
@@ -229,9 +228,8 @@ export default function MessagesPage() {
               return (
                 <div
                   key={msg.id}
-                  className={`space-y-1.5 flex flex-col ${
-                    isCurrentUser ? "items-end" : "items-start"
-                  }`}
+                  className={`space-y-1.5 flex flex-col ${isCurrentUser ? "items-end" : "items-start"
+                    }`}
                 >
                   {/* Sender Info */}
                   <div className="flex items-center gap-1.5 text-xs text-zinc-500">
@@ -244,13 +242,12 @@ export default function MessagesPage() {
 
                   {/* Message Bubble */}
                   <div
-                    className={`p-3.5 sm:p-4 text-sm leading-relaxed max-w-[90%] sm:max-w-[75%] rounded-2xl ${
-                      isCurrentUser
-                        ? role === "brand"
-                          ? "bg-[#A05AFF]/10 border border-[#A05AFF]/25 text-zinc-900 shadow-2xs font-normal"
-                          : "bg-[#1BCFB4]/10 border border-[#1BCFB4]/25 text-zinc-900 shadow-2xs font-normal"
-                        : "bg-white border border-[#E8E5DC] text-zinc-800 shadow-2xs font-normal"
-                    }`}
+                    className={`p-3.5 sm:p-4 text-sm leading-relaxed max-w-[90%] sm:max-w-[75%] rounded-2xl ${isCurrentUser
+                      ? role === "brand"
+                        ? "bg-[#A05AFF]/10 border border-[#A05AFF]/25 text-zinc-900 shadow-2xs font-normal"
+                        : "bg-[#1BCFB4]/10 border border-[#1BCFB4]/25 text-zinc-900 shadow-2xs font-normal"
+                      : "bg-white border border-[#E8E5DC] text-zinc-800 shadow-2xs font-normal"
+                      }`}
                   >
                     <p>{msg.content}</p>
                   </div>

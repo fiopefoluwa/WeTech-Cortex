@@ -27,14 +27,14 @@ export const demoDeal = {
 
 export const demoBrand = {
   id: 1,
-  name: "Northstar Coffee",
+  name: "Nescafe Coffee",
   role: "brand" as const,
   email: "hello@northstarcoffee.com",
 };
 
 export const demoCreator = {
   id: 2,
-  name: "Amara Okafor",
+  name: "Amaka Moyinlola",
   role: "creator" as const,
   email: "amara@creator.com",
 };
@@ -87,7 +87,7 @@ export const threadEvents: ThreadEvent[] = [
     id: "thread-3",
     date: "SEPT 14",
     title: "Approved & Paid",
-    details: ["Northstar Coffee approved"],
+    details: ["Nescafe Coffee approved"],
     badge: { label: "Paid", color: "green" },
     isHighlighted: true,
   },
@@ -152,7 +152,7 @@ export const recentActivities: ActivityItem[] = [
     id: "ra-3",
     icon: "approve",
     title: "Change Request #02 approved",
-    subtitle: "Northstar Coffee",
+    subtitle: "Nescafe Coffee",
     date: "Sept 14",
   },
   {
@@ -248,7 +248,7 @@ export const agreementTerms: ExtractedTerm[] = [
 export const demoChatMessages: ChatMessage[] = [
   {
     id: "msg-1",
-    senderName: "Northstar Coffee",
+    senderName: "Nescafe Coffee",
     senderRole: "brand",
     time: "10:14",
     content:
@@ -262,7 +262,7 @@ export const demoChatMessages: ChatMessage[] = [
   },
   {
     id: "msg-2",
-    senderName: "Amara Okafor",
+    senderName: "Amaka Moyinlola",
     senderRole: "creator",
     time: "10:22",
     content:
@@ -270,7 +270,7 @@ export const demoChatMessages: ChatMessage[] = [
   },
   {
     id: "msg-3",
-    senderName: "Northstar Coffee",
+    senderName: "Nescafe Coffee",
     senderRole: "brand",
     time: "10:29",
     content: "Agreed. Please send through the change request.",
@@ -298,7 +298,7 @@ export const demoDeliverables: DeliverableItem[] = [
     revisions: "1 / 1 revision",
     referenceClause: "Deliverables §2.1",
     referenceText:
-      "First vertical video asset delivered on Sept 12 and approved by Northstar Coffee after 1 revision round.",
+      "First vertical video asset delivered on Sept 12 and approved by Nescafe Coffee after 1 revision round.",
   },
   {
     id: "del-2",
@@ -310,7 +310,7 @@ export const demoDeliverables: DeliverableItem[] = [
     revisions: "0 / 1 revision",
     referenceClause: "Deliverables §2.2",
     referenceText:
-      "Second vertical video submitted on Sept 14, currently in review by Northstar Coffee editorial team.",
+      "Second vertical video submitted on Sept 14, currently in review by Nescafe Coffee editorial team.",
   },
   {
     id: "del-3",
@@ -451,7 +451,7 @@ export const demoPayments: PaymentItem[] = [
     payment: "₦40,000 · Sept 14",
     status: "Paid",
     statusVariant: "green",
-    details: "Milestone payment for YouTube Short creation approved and transferred by Northstar Coffee.",
+    details: "Milestone payment for YouTube Short creation approved and transferred by Nescafe Coffee.",
   },
   {
     id: "pay-3",
@@ -502,7 +502,7 @@ export const demoActivityTimeline: ActivityTimelineItem[] = [
     id: "act-2",
     date: "SEPT 11",
     title: "Creator joined the Deal Room",
-    subtitle: "Amara Okafor joined the shared workspace.",
+    subtitle: "Amaka Moyinlola joined the shared workspace.",
   },
   {
     id: "act-3",
@@ -526,7 +526,7 @@ export const demoActivityTimeline: ActivityTimelineItem[] = [
     id: "act-6",
     date: "SEPT 14",
     title: "Change Request #02 approved",
-    subtitle: "Northstar Coffee approved the additional work.",
+    subtitle: "Nescafe Coffee approved the additional work.",
   },
   {
     id: "act-7",
@@ -562,7 +562,7 @@ export function formatFriendlyDate(dateStr?: string): string {
         return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
       }
     }
-  } catch {}
+  } catch { }
   return dateStr;
 }
 

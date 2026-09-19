@@ -66,9 +66,8 @@ export default function LicensingPage() {
           {/* Role badge */}
           <div className="flex items-center gap-2.5 bg-white border border-zinc-200 px-4 py-2 rounded-xl shadow-2xs">
             <span
-              className={`w-2 h-2 rounded-full ${
-                role === "brand" ? "bg-[#A05AFF]" : "bg-[#1BCFB4]"
-              }`}
+              className={`w-2 h-2 rounded-full ${role === "brand" ? "bg-[#A05AFF]" : "bg-[#1BCFB4]"
+                }`}
             />
             <span className="text-xs text-zinc-600 font-normal">
               Role:{" "}
@@ -195,7 +194,7 @@ export default function LicensingPage() {
             <p className="text-xs text-zinc-700 font-normal leading-relaxed mb-5">
               {role === "brand"
                 ? "Your brand's active Instagram ad exceeds original organic scope (expired Oct 1). Create renewal to maintain full commercial compliance."
-                : "Northstar Coffee ran paid ads on Instagram using your video beyond the organic 30-day license. Brand was notified to purchase commercial rights."}
+                : "Nescafe Coffee ran paid ads on Instagram using your video beyond the organic 30-day license. Brand was notified to purchase commercial rights."}
             </p>
 
             {/* 2 Grounding Clauses */}

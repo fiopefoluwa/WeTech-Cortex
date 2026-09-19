@@ -37,7 +37,7 @@ export default function ScopeChangeReviewModal({
           description: "Additional YouTube Shorts version outside original TikTok scope",
           reason: "Brand requested extra short-form vertical deliverable during production",
           additional_amount: 40000,
-          requested_by: 1, // Northstar Coffee
+          requested_by: 1, // Nescafe Coffee
         }),
       });
 
@@ -101,7 +101,7 @@ export default function ScopeChangeReviewModal({
               “The first video is looking great. Could you also create a YouTube Shorts version?”
             </p>
             <p className="text-[11px] text-zinc-400 mt-1 font-light">
-              Sent by Northstar Coffee (Brand) · 10:14
+              Sent by Nescafe Coffee (Brand) · 10:14
             </p>
           </div>
 

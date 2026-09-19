@@ -54,9 +54,8 @@ export default function ChangeRequestsPage() {
           {/* Role badge */}
           <div className="flex items-center gap-2.5 bg-white border border-zinc-200 px-4 py-2 rounded-xl shadow-2xs">
             <span
-              className={`w-2 h-2 rounded-full ${
-                role === "brand" ? "bg-[#A05AFF]" : "bg-[#1BCFB4]"
-              }`}
+              className={`w-2 h-2 rounded-full ${role === "brand" ? "bg-[#A05AFF]" : "bg-[#1BCFB4]"
+                }`}
             />
             <span className="text-xs text-zinc-600 font-normal">
               Perspective:{" "}
@@ -99,8 +98,8 @@ export default function ChangeRequestsPage() {
             </h2>
             <p className="text-xs text-zinc-500 font-light">
               {role === "brand"
-                ? "Requested by Amara Okafor · Approved & Settled by Northstar Coffee"
-                : "Requested by You · Approved & Settled by Northstar Coffee"}
+                ? "Requested by Amaka Moyinlola · Approved & Settled by Nescafe Coffee"
+                : "Requested by You · Approved & Settled by Nescafe Coffee"}
             </p>
           </div>
 

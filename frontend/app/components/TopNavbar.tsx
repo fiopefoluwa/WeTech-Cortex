@@ -84,10 +84,10 @@ export default function TopNavbar({ currentDealName }: TopNavbarProps = {}) {
           >
             <span
               className={`w-2 h-2 rounded-full ${backendStatus === "connected"
-                  ? "bg-[#1BCFB4]"
-                  : backendStatus === "checking"
-                    ? "bg-[#4BCBEB]"
-                    : "bg-zinc-400"
+                ? "bg-[#1BCFB4]"
+                : backendStatus === "checking"
+                  ? "bg-[#4BCBEB]"
+                  : "bg-zinc-400"
                 }`}
             />
             <span>{backendStatus === "connected" ? "Live Server" : "Connecting..."}</span>
@@ -104,8 +104,8 @@ export default function TopNavbar({ currentDealName }: TopNavbarProps = {}) {
                   type="button"
                   onClick={switchRole}
                   className={`flex items-center gap-2 sm:gap-2.5 px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl text-xs transition-all cursor-pointer ${role === "brand"
-                      ? "bg-white text-zinc-900 shadow-xs font-medium"
-                      : "bg-white text-zinc-900 shadow-xs font-medium"
+                    ? "bg-white text-zinc-900 shadow-xs font-medium"
+                    : "bg-white text-zinc-900 shadow-xs font-medium"
                     }`}
                   title="Click to switch perspective between Brand and Creator"
                 >
@@ -115,8 +115,8 @@ export default function TopNavbar({ currentDealName }: TopNavbarProps = {}) {
                   </strong>
                   <span
                     className={`text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-md ${role === "brand"
-                        ? "bg-[#A05AFF]/15 text-[#702AE0]"
-                        : "bg-[#1BCFB4]/15 text-[#0A7B69]"
+                      ? "bg-[#A05AFF]/15 text-[#702AE0]"
+                      : "bg-[#1BCFB4]/15 text-[#0A7B69]"
                       }`}
                   >
                     {role}
@@ -142,7 +142,7 @@ export default function TopNavbar({ currentDealName }: TopNavbarProps = {}) {
                     onMouseLeave={() => setIsUserMenuOpen(false)}
                   >
                     <div className="px-4 py-2 border-b border-zinc-100">
-                     
+
                       <p className="text-xs font-bold text-zinc-900 mt-0.5">
                         {user.name}
                       </p>
@@ -159,13 +159,13 @@ export default function TopNavbar({ currentDealName }: TopNavbarProps = {}) {
                         type="button"
                         onClick={() => handleLoginAs("brand")}
                         className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs text-left cursor-pointer transition-colors ${role === "brand"
-                            ? "bg-[#A05AFF]/15 text-[#702AE0] font-semibold"
-                            : "text-zinc-700 hover:bg-zinc-50 font-normal"
+                          ? "bg-[#A05AFF]/15 text-[#702AE0] font-semibold"
+                          : "text-zinc-700 hover:bg-zinc-50 font-normal"
                           }`}
                       >
                         <div className="flex items-center gap-2">
                           <Building2 size={13} className="text-[#A05AFF]" />
-                          <span>Northstar Coffee (Brand)</span>
+                          <span>Nescafe Coffee (Brand)</span>
                         </div>
                         {role === "brand" && <Check size={13} className="text-[#A05AFF]" />}
                       </button>
@@ -174,13 +174,13 @@ export default function TopNavbar({ currentDealName }: TopNavbarProps = {}) {
                         type="button"
                         onClick={() => handleLoginAs("creator")}
                         className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs text-left cursor-pointer transition-colors ${role === "creator"
-                            ? "bg-[#1BCFB4]/15 text-[#0A7B69] font-semibold"
-                            : "text-zinc-700 hover:bg-zinc-50 font-normal"
+                          ? "bg-[#1BCFB4]/15 text-[#0A7B69] font-semibold"
+                          : "text-zinc-700 hover:bg-zinc-50 font-normal"
                           }`}
                       >
                         <div className="flex items-center gap-2">
                           <User size={13} className="text-[#1BCFB4]" />
-                          <span>Amara Okafor (Creator)</span>
+                          <span>Amaka Moyinlola (Creator)</span>
                         </div>
                         {role === "creator" && <Check size={13} className="text-[#1BCFB4]" />}
                       </button>
@@ -276,7 +276,7 @@ export default function TopNavbar({ currentDealName }: TopNavbarProps = {}) {
                     className="p-3 rounded-xl border-2 border-zinc-200 hover:border-[#A05AFF] hover:bg-[#A05AFF]/5 text-left transition-all cursor-pointer group"
                   >
                     <p className="text-xs font-semibold text-zinc-900 group-hover:text-[#A05AFF]">
-                      Northstar Coffee
+                      Nescafe Coffee
                     </p>
                     <p className="text-[11px] text-zinc-500 font-light">Brand account</p>
                   </button>
@@ -285,7 +285,7 @@ export default function TopNavbar({ currentDealName }: TopNavbarProps = {}) {
                     className="p-3 rounded-xl border-2 border-zinc-200 hover:border-[#1BCFB4] hover:bg-[#1BCFB4]/5 text-left transition-all cursor-pointer group"
                   >
                     <p className="text-xs font-semibold text-zinc-900 group-hover:text-[#0A7B69]">
-                      Amara Okafor
+                      Amaka Moyinlola
                     </p>
                     <p className="text-[11px] text-zinc-500 font-light">Creator account</p>
                   </button>

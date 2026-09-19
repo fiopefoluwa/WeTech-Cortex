@@ -167,7 +167,7 @@ export default function LoginPage() {
           className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white hover:bg-zinc-50 border border-zinc-200/90 hover:border-[#A05AFF]/60 shadow-xs hover:shadow-md transition-all cursor-pointer group"
           aria-label="Open Charge Inspiration market rates"
         >
-         
+
           <span className="text-xs font-semibold text-zinc-900 group-hover:text-[#A05AFF] transition-colors font-sans">
             Charge Inspiration
           </span>
@@ -206,7 +206,7 @@ export default function LoginPage() {
           {/* Left Column: 1-Click Demo Accounts Selector */}
           <div className="lg:col-span-5 flex flex-col space-y-4">
             <div>
-             
+
               <h3 className="font-serif text-lg font-bold text-zinc-900 mb-1">
                 Explore active workspaces
               </h3>
@@ -241,7 +241,7 @@ export default function LoginPage() {
                 </p>
 
                 <div className="pt-3 border-t border-zinc-100 flex items-center justify-between text-xs font-medium text-[#A05AFF]">
-                  <span className="group-hover:underline">Enter as Northstar Coffee</span>
+                  <span className="group-hover:underline">Enter as Nescafe Coffee</span>
                   <div className="w-6 h-6 rounded-full bg-[#A05AFF]/15 text-[#702AE0] flex items-center justify-center group-hover:translate-x-1 transition-transform">
                     <ArrowRight size={12} />
                   </div>
@@ -273,7 +273,7 @@ export default function LoginPage() {
                 </p>
 
                 <div className="pt-3 border-t border-zinc-100 flex items-center justify-between text-xs font-medium text-[#0A7B69]">
-                  <span className="group-hover:underline">Enter as Amara Okafor</span>
+                  <span className="group-hover:underline">Enter as Amaka Moyinlola</span>
                   <div className="w-6 h-6 rounded-full bg-[#1BCFB4]/15 text-[#0A7B69] flex items-center justify-center group-hover:translate-x-1 transition-transform">
                     <ArrowRight size={12} />
                   </div>
@@ -286,240 +286,236 @@ export default function LoginPage() {
           <div className="lg:col-span-7">
             <div
               ref={formCardRef}
-              className={`bg-white rounded-2xl border p-6 sm:p-8 shadow-[0_1px_3px_rgba(0,0,0,0.04)] w-full transition-all duration-300 ${
-                highlightSignUpBanner
-                  ? "border-[#A05AFF] ring-4 ring-[#A05AFF]/15 shadow-lg"
-                  : "border-[#E8E5DC]"
-              }`}
-            >
-          <div className="mb-5 flex items-center justify-between">
-            <div>
-              <h2 className="font-serif text-lg font-bold text-zinc-900">
-                {isSignUp ? "Get started with Scope" : "Sign in with email"}
-              </h2>
-              <p className="text-xs text-zinc-500 font-normal">
-                {isSignUp ? "Free public tier includes 3 deal rooms." : "Enter your account credentials."}
-              </p>
-            </div>
-
-            {/* Role indicator badge when signing up */}
-            {isSignUp && (
-              <span
-                className={`text-[10px] font-semibold uppercase px-2 py-0.5 rounded-full border ${
-                  role === "brand"
-                    ? " text-[#702AE0]"
-                    : " text-[#0A7B69]"
+              className={`bg-white rounded-2xl border p-6 sm:p-8 shadow-[0_1px_3px_rgba(0,0,0,0.04)] w-full transition-all duration-300 ${highlightSignUpBanner
+                ? "border-[#A05AFF] ring-4 ring-[#A05AFF]/15 shadow-lg"
+                : "border-[#E8E5DC]"
                 }`}
-              >
-                {role === "brand" ? "Brand / Client" : "Creator / Talent"}
-              </span>
-            )}
-          </div>
-
-          {error && (
-            <div className="mb-4 p-3 rounded-xl bg-[#FE9496]/20 border border-[#FE9496]/45 flex items-start gap-2 text-xs text-[#B82B30]">
-              <AlertCircle size={15} className="text-[#B82B30] mt-0.5 shrink-0" />
-              <span className="font-normal">{error}</span>
-            </div>
-          )}
-
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Full Name field (Sign Up only) */}
-            {isSignUp && (
-              <div>
-                <label className="block text-xs font-medium text-zinc-700 mb-1.5">
-                  {role === "brand" ? "Company or Brand Name" : "Your Full Name"}
-                </label>
-                <div className="relative">
-                  <input
-                    type="text"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    placeholder={role === "brand" ? "Nescafe" : "Amaka Ucherike"}
-                    className="w-full pl-9 pr-3 py-2.5 rounded-xl border border-zinc-200 text-xs focus:outline-none focus:ring-2 focus:ring-[#A05AFF]/25 focus:border-[#A05AFF] bg-zinc-50/50 font-normal"
-                    required={isSignUp}
-                  />
-                  {role === "brand" ? (
-                    <Building2
-                      size={14}
-                      className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400"
-                    />
-                  ) : (
-                    <User
-                      size={14}
-                      className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400"
-                    />
-                  )}
+            >
+              <div className="mb-5 flex items-center justify-between">
+                <div>
+                  <h2 className="font-serif text-lg font-bold text-zinc-900">
+                    {isSignUp ? "Get started with Scope" : "Sign in with email"}
+                  </h2>
+                  <p className="text-xs text-zinc-500 font-normal">
+                    {isSignUp ? "Free public tier includes 3 deal rooms." : "Enter your account credentials."}
+                  </p>
                 </div>
-              </div>
-            )}
 
-            {/* Email Address */}
-            <div>
-              <div className="flex items-center justify-between mb-1.5">
-                <label className="text-xs font-medium text-zinc-700">
-                  Email address
-                </label>
-                {!isSignUp && (
-                  <div className="flex items-center gap-1 text-[10px]">
-                    <button
-                      type="button"
-                      onClick={() => setEmail(DEMO_ACCOUNTS.brand.email)}
-                      className="text-[#A05AFF] hover:underline cursor-pointer font-medium"
-                    >
-                      Use Brand
-                    </button>
-                    <span className="text-zinc-300 font-light">·</span>
-                    <button
-                      type="button"
-                      onClick={() => setEmail(DEMO_ACCOUNTS.creator.email)}
-                      className="text-[#0A7B69] hover:underline cursor-pointer font-medium"
-                    >
-                      Use Creator
-                    </button>
-                  </div>
+                {/* Role indicator badge when signing up */}
+                {isSignUp && (
+                  <span
+                    className={`text-[10px] font-semibold uppercase px-2 py-0.5 rounded-full border ${role === "brand"
+                      ? " text-[#702AE0]"
+                      : " text-[#0A7B69]"
+                      }`}
+                  >
+                    {role === "brand" ? "Brand / Client" : "Creator / Talent"}
+                  </span>
                 )}
               </div>
-              <div className="relative">
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="name@example.com"
-                  className="w-full pl-9 pr-3 py-2.5 rounded-xl border border-zinc-200 text-xs focus:outline-none focus:ring-2 focus:ring-[#A05AFF]/25 focus:border-[#A05AFF] bg-zinc-50/50 font-normal"
-                  required
-                />
-                <Mail
-                  size={14}
-                  className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400"
-                />
-              </div>
-            </div>
 
-            {/* Password */}
-            <div>
-              <label className="block text-xs font-medium text-zinc-700 mb-1.5">
-                Password
-              </label>
-              <div className="relative">
-                <input
-                  type={showPassword ? "text" : "password"}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder={isSignUp ? "Secure password" : "Enter password"}
-                  className="w-full pl-9 pr-10 py-2.5 rounded-xl border border-zinc-200 text-xs focus:outline-none focus:ring-2 focus:ring-[#A05AFF]/25 focus:border-[#A05AFF] bg-zinc-50/50 font-normal"
-                  required
-                />
-                <Lock
-                  size={14}
-                  className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600 cursor-pointer"
-                >
-                  {showPassword ? <EyeOff size={14} /> : <Eye size={14} />}
-                </button>
-              </div>
-            </div>
-
-            {/* Role Selection (Sign Up only) */}
-            {isSignUp && (
-              <div>
-                <label className="block text-xs font-medium text-zinc-700 mb-1.5">
-                  I am joining as a
-                </label>
-                <div className="grid grid-cols-2 gap-2.5">
-                  <button
-                    type="button"
-                    onClick={() => setRole("brand")}
-                    className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
-                      role === "brand"
-                        ? "border-[#A05AFF] bg-[#A05AFF]/5 ring-1 ring-[#A05AFF]"
-                        : "border-zinc-200 hover:border-zinc-300 bg-zinc-50/50"
-                    }`}
-                  >
-                    <div className="flex items-center gap-1.5 mb-1 text-[#702AE0]">
-                      <Building2 size={14} />
-                      <span className="text-xs font-semibold">Brand / Client</span>
-                    </div>
-                    <p className="text-[10px] text-zinc-500 leading-tight">
-                      Hiring creators & managing campaign deliverables
-                    </p>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => setRole("creator")}
-                    className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
-                      role === "creator"
-                        ? "border-[#1BCFB4] bg-[#1BCFB4]/5 ring-1 ring-[#1BCFB4]"
-                        : "border-zinc-200 hover:border-zinc-300 bg-zinc-50/50"
-                    }`}
-                  >
-                    <div className="flex items-center gap-1.5 mb-1 text-[#0A7B69]">
-                      <User size={14} />
-                      <span className="text-xs font-semibold">Creator / Talent</span>
-                    </div>
-                    <p className="text-[10px] text-zinc-500 leading-tight">
-                      Delivering work, tracking rights & earnings
-                    </p>
-                  </button>
+              {error && (
+                <div className="mb-4 p-3 rounded-xl bg-[#FE9496]/20 border border-[#FE9496]/45 flex items-start gap-2 text-xs text-[#B82B30]">
+                  <AlertCircle size={15} className="text-[#B82B30] mt-0.5 shrink-0" />
+                  <span className="font-normal">{error}</span>
                 </div>
+              )}
+
+              <form onSubmit={handleSubmit} className="space-y-4">
+                {/* Full Name field (Sign Up only) */}
+                {isSignUp && (
+                  <div>
+                    <label className="block text-xs font-medium text-zinc-700 mb-1.5">
+                      {role === "brand" ? "Company or Brand Name" : "Your Full Name"}
+                    </label>
+                    <div className="relative">
+                      <input
+                        type="text"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        placeholder={role === "brand" ? "Nescafe" : "Amaka Ucherike"}
+                        className="w-full pl-9 pr-3 py-2.5 rounded-xl border border-zinc-200 text-xs focus:outline-none focus:ring-2 focus:ring-[#A05AFF]/25 focus:border-[#A05AFF] bg-zinc-50/50 font-normal"
+                        required={isSignUp}
+                      />
+                      {role === "brand" ? (
+                        <Building2
+                          size={14}
+                          className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400"
+                        />
+                      ) : (
+                        <User
+                          size={14}
+                          className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400"
+                        />
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {/* Email Address */}
+                <div>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <label className="text-xs font-medium text-zinc-700">
+                      Email address
+                    </label>
+                    {!isSignUp && (
+                      <div className="flex items-center gap-1 text-[10px]">
+                        <button
+                          type="button"
+                          onClick={() => setEmail(DEMO_ACCOUNTS.brand.email)}
+                          className="text-[#A05AFF] hover:underline cursor-pointer font-medium"
+                        >
+                          Use Brand
+                        </button>
+                        <span className="text-zinc-300 font-light">·</span>
+                        <button
+                          type="button"
+                          onClick={() => setEmail(DEMO_ACCOUNTS.creator.email)}
+                          className="text-[#0A7B69] hover:underline cursor-pointer font-medium"
+                        >
+                          Use Creator
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                  <div className="relative">
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="name@example.com"
+                      className="w-full pl-9 pr-3 py-2.5 rounded-xl border border-zinc-200 text-xs focus:outline-none focus:ring-2 focus:ring-[#A05AFF]/25 focus:border-[#A05AFF] bg-zinc-50/50 font-normal"
+                      required
+                    />
+                    <Mail
+                      size={14}
+                      className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400"
+                    />
+                  </div>
+                </div>
+
+                {/* Password */}
+                <div>
+                  <label className="block text-xs font-medium text-zinc-700 mb-1.5">
+                    Password
+                  </label>
+                  <div className="relative">
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      placeholder={isSignUp ? "Secure password" : "Enter password"}
+                      className="w-full pl-9 pr-10 py-2.5 rounded-xl border border-zinc-200 text-xs focus:outline-none focus:ring-2 focus:ring-[#A05AFF]/25 focus:border-[#A05AFF] bg-zinc-50/50 font-normal"
+                      required
+                    />
+                    <Lock
+                      size={14}
+                      className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600 cursor-pointer"
+                    >
+                      {showPassword ? <EyeOff size={14} /> : <Eye size={14} />}
+                    </button>
+                  </div>
+                </div>
+
+                {/* Role Selection (Sign Up only) */}
+                {isSignUp && (
+                  <div>
+                    <label className="block text-xs font-medium text-zinc-700 mb-1.5">
+                      I am joining as a
+                    </label>
+                    <div className="grid grid-cols-2 gap-2.5">
+                      <button
+                        type="button"
+                        onClick={() => setRole("brand")}
+                        className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between ${role === "brand"
+                          ? "border-[#A05AFF] bg-[#A05AFF]/5 ring-1 ring-[#A05AFF]"
+                          : "border-zinc-200 hover:border-zinc-300 bg-zinc-50/50"
+                          }`}
+                      >
+                        <div className="flex items-center gap-1.5 mb-1 text-[#702AE0]">
+                          <Building2 size={14} />
+                          <span className="text-xs font-semibold">Brand / Client</span>
+                        </div>
+                        <p className="text-[10px] text-zinc-500 leading-tight">
+                          Hiring creators & managing campaign deliverables
+                        </p>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => setRole("creator")}
+                        className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between ${role === "creator"
+                          ? "border-[#1BCFB4] bg-[#1BCFB4]/5 ring-1 ring-[#1BCFB4]"
+                          : "border-zinc-200 hover:border-zinc-300 bg-zinc-50/50"
+                          }`}
+                      >
+                        <div className="flex items-center gap-1.5 mb-1 text-[#0A7B69]">
+                          <User size={14} />
+                          <span className="text-xs font-semibold">Creator / Talent</span>
+                        </div>
+                        <p className="text-[10px] text-zinc-500 leading-tight">
+                          Delivering work, tracking rights & earnings
+                        </p>
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Submit Button */}
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full py-2.5 rounded-xl bg-zinc-900 text-white text-xs font-medium hover:bg-zinc-800 transition-colors cursor-pointer flex items-center justify-center gap-2 shadow-xs disabled:opacity-60 mt-2"
+                >
+                  <span>
+                    {loading
+                      ? isSignUp
+                        ? "Creating account..."
+                        : "Signing in..."
+                      : isSignUp
+                        ? "Create Account & Start Deal Room"
+                        : "Continue to Workspace"}
+                  </span>
+                </button>
+              </form>
+
+              {/* Mini Text Switcher between Sign Up and Login */}
+              <div className="mt-5 pt-4 border-t border-zinc-100 text-center">
+                {isSignUp ? (
+                  <p className="text-xs text-zinc-500 font-normal">
+                    Already have an account?{" "}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsSignUp(false);
+                        setError(null);
+                      }}
+                      className="text-[#A05AFF] hover:underline font-semibold cursor-pointer"
+                    >
+                      Sign in
+                    </button>
+                  </p>
+                ) : (
+                  <p className="text-xs text-zinc-500 font-normal">
+                    Don&apos;t have an account?{" "}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsSignUp(true);
+                        setError(null);
+                      }}
+                      className="text-[#A05AFF] hover:underline font-semibold cursor-pointer"
+                    >
+                      Create one here
+                    </button>
+                  </p>
+                )}
               </div>
-            )}
-
-            {/* Submit Button */}
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full py-2.5 rounded-xl bg-zinc-900 text-white text-xs font-medium hover:bg-zinc-800 transition-colors cursor-pointer flex items-center justify-center gap-2 shadow-xs disabled:opacity-60 mt-2"
-            >
-              <span>
-                {loading
-                  ? isSignUp
-                    ? "Creating account..."
-                    : "Signing in..."
-                  : isSignUp
-                  ? "Create Account & Start Deal Room"
-                  : "Continue to Workspace"}
-              </span>
-            </button>
-          </form>
-
-          {/* Mini Text Switcher between Sign Up and Login */}
-          <div className="mt-5 pt-4 border-t border-zinc-100 text-center">
-            {isSignUp ? (
-              <p className="text-xs text-zinc-500 font-normal">
-                Already have an account?{" "}
-                <button
-                  type="button"
-                  onClick={() => {
-                    setIsSignUp(false);
-                    setError(null);
-                  }}
-                  className="text-[#A05AFF] hover:underline font-semibold cursor-pointer"
-                >
-                  Sign in
-                </button>
-              </p>
-            ) : (
-              <p className="text-xs text-zinc-500 font-normal">
-                Don&apos;t have an account?{" "}
-                <button
-                  type="button"
-                  onClick={() => {
-                    setIsSignUp(true);
-                    setError(null);
-                  }}
-                  className="text-[#A05AFF] hover:underline font-semibold cursor-pointer"
-                >
-                  Create one here
-                </button>
-              </p>
-            )}
-          </div>
             </div>
           </div>
         </div>

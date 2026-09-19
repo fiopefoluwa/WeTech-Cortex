@@ -25,7 +25,7 @@ const defaultThreadHistoryItems = [
   },
   {
     id: "item-3",
-    tag: "SEPT 14 · APPROVED BY NORTHSTAR COFFEE",
+    tag: "SEPT 14 · APPROVED BY Nescafe Coffee",
     title: "Payment received and agreement updated",
     isCurrent: false,
   },
@@ -48,21 +48,21 @@ export default function AgreementThreadDrawer({
 
   const items = isCustomDeal
     ? [
-        {
-          id: "custom-item-1",
-          tag: deal.agreementFile
-            ? `DOCUMENT ATTACHED · ${deal.agreementFile.name.toUpperCase()}`
-            : "INITIAL AGREEMENT TERMS",
-          title: `${deal.description} · ₦${deal.totalAmount.toLocaleString()} total`,
-          isCurrent: false,
-        },
-        {
-          id: "custom-item-2",
-          tag: "CURRENT SCOPE GROUND TRUTH",
-          title: `${deal.name} · ${deal.brandName} & ${deal.creatorName}`,
-          isCurrent: true,
-        },
-      ]
+      {
+        id: "custom-item-1",
+        tag: deal.agreementFile
+          ? `DOCUMENT ATTACHED · ${deal.agreementFile.name.toUpperCase()}`
+          : "INITIAL AGREEMENT TERMS",
+        title: `${deal.description} · ₦${deal.totalAmount.toLocaleString()} total`,
+        isCurrent: false,
+      },
+      {
+        id: "custom-item-2",
+        tag: "CURRENT SCOPE GROUND TRUTH",
+        title: `${deal.name} · ${deal.brandName} & ${deal.creatorName}`,
+        isCurrent: true,
+      },
+    ]
     : defaultThreadHistoryItems;
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -129,11 +129,10 @@ export default function AgreementThreadDrawer({
           {items.map((item) => (
             <div
               key={item.id}
-              className={`rounded-2xl p-4.5 bg-white transition-shadow ${
-                item.isCurrent
+              className={`rounded-2xl p-4.5 bg-white transition-shadow ${item.isCurrent
                   ? "border border-[#A05AFF] shadow-[0_1px_6px_rgba(160,90,255,0.15)] ring-1 ring-[#A05AFF]/30"
                   : "border border-zinc-200 shadow-[0_1px_2px_rgba(0,0,0,0.02)]"
-              }`}
+                }`}
             >
               <p className="text-[10px] font-semibold tracking-[0.12em] text-zinc-400 uppercase mb-1.5 font-sans">
                 {item.tag}

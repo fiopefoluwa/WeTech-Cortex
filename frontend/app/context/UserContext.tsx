@@ -18,7 +18,7 @@ export interface UserPersona {
 export const DEMO_ACCOUNTS: Record<UserRole, UserPersona> = {
   brand: {
     id: 1,
-    name: "Northstar Coffee",
+    name: "Nescafe Coffee",
     role: "brand",
     email: "hello@northstarcoffee.com",
     organization: "Northstar Roasters Ltd.",
@@ -27,7 +27,7 @@ export const DEMO_ACCOUNTS: Record<UserRole, UserPersona> = {
   },
   creator: {
     id: 2,
-    name: "Amara Okafor",
+    name: "Amaka Moyinlola",
     role: "creator",
     email: "amara@creator.com",
     organization: "@amara_okafor",

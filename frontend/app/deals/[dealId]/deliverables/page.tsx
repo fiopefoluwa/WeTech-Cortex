@@ -157,9 +157,8 @@ export default function DeliverablesPage() {
         {/* Role perspective banner badge */}
         <div className="flex items-center gap-2 bg-white border border-zinc-200 px-3.5 py-2 rounded-xl shadow-2xs">
           <span
-            className={`w-2 h-2 rounded-full ${
-              role === "brand" ? "bg-[#A05AFF]" : "bg-[#1BCFB4]"
-            }`}
+            className={`w-2 h-2 rounded-full ${role === "brand" ? "bg-[#A05AFF]" : "bg-[#1BCFB4]"
+              }`}
           />
           <div className="text-xs">
             <span className="text-zinc-500 font-normal">Role: </span>
@@ -340,7 +339,7 @@ export default function DeliverablesPage() {
               </div>
               <p className="text-xs text-zinc-500 font-light leading-relaxed">
                 Submitting this deliverable sends an instant notification to{" "}
-                <strong className="font-semibold text-zinc-700">Northstar Coffee</strong> to review and verify.
+                <strong className="font-semibold text-zinc-700">Nescafe Coffee</strong> to review and verify.
               </p>
               <div className="flex items-center justify-end gap-2.5 pt-2">
                 <button
