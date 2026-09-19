@@ -1,12 +1,12 @@
-# AgreementOS — Frontend Workspace
+# Scope — Frontend Workspace
 
-The web application for AgreementOS built with Next.js 16 (App Router, Turbopack), React 19, and Tailwind CSS.
+The web application for Scope built with Next.js 16 (App Router, Turbopack), React 19, and Tailwind CSS.
 
 ---
 
 ## About the Application
 
-AgreementOS provides a collaborative deal room for commercial creator partnerships. It converts static contract terms into an active interface that allows brands and creators to review deliverables, monitor real-time conversation for scope changes, manage digital licensing windows, and approve milestone payouts.
+Scope provides a collaborative deal room for commercial creator partnerships. It converts static contract terms into an active interface that allows brands and creators to review deliverables, monitor real-time conversation for scope changes, manage digital licensing windows, and approve milestone payouts.
 
 Key capabilities include:
 - Structured contract term cards extracted from legal documents.
@@ -53,7 +53,7 @@ Protected routes are nested under `/deals/[dealId]` and guarded by `AuthGuard`:
 ## Session and State Management
 
 Session state is managed globally through `UserContext.tsx`:
-- **Hydration Safety**: Persisted in `localStorage` under `agreementos_active_persona`.
+- **Hydration Safety**: Persisted in `localStorage` under `Scope_active_persona`.
 - **Zero-Flash AuthGuard**: Protected routes display a loading spinner until hydration resolves, preventing unauthorized layout flashing.
 - **Dynamic Perspective Switching**: Toggle between `brand` (`Northstar Coffee`) and `creator` (`Amara Okafor`) in real time.
 

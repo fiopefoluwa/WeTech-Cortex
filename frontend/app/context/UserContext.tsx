@@ -54,7 +54,7 @@ interface UserContextType {
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
-const STORAGE_KEY = "agreementos_active_persona";
+const STORAGE_KEY = "Scope_active_persona";
 
 export function UserProvider({ children }: { children: React.ReactNode }) {
   // Start as null — let useEffect hydrate from localStorage

@@ -1,12 +1,12 @@
-## AgreementOS — Team Development Specification
+## Scope — Team Development Specification
 
 ## 1. Objective
 
-Build a working MVP of AgreementOS, a shared workspace for brands and creators/freelancers to manage agreements, communication, deliverables, licensing, scope changes, and payments.
+Build a working MVP of Scope, a shared workspace for brands and creators/freelancers to manage agreements, communication, deliverables, licensing, scope changes, and payments.
 
 The MVP must prove one core concept:
 
-AgreementOS understands what was agreed and detects when what happens in reality goes beyond those terms.
+Scope understands what was agreed and detects when what happens in reality goes beyond those terms.
 
 We are not building a full legal/contract-management platform for the hackathon.
 
@@ -279,7 +279,7 @@ Date: October 15
 
 Organic usage only, 30 days.
 
-## AgreementOS detects:
+## Scope detects:
 
 ## Potential licensing violation
 
@@ -661,7 +661,7 @@ Brand requests extra work
 
 ↓
 
-AgreementOS detects scope change
+Scope detects scope change
 
 ↓
 
@@ -689,7 +689,7 @@ Usage event occurs
 
 ↓
 
-AgreementOS detects license issue
+Scope detects license issue
 
 ↓
 

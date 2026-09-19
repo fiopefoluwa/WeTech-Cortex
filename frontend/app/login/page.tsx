@@ -89,7 +89,7 @@ export default function LoginPage() {
               </div>
               <div>
                 <span className="text-[16px] font-bold tracking-tight text-zinc-900 font-serif block">
-                  AgreementOS
+                  Scope
                 </span>
               </div>
             </Link>
@@ -98,7 +98,7 @@ export default function LoginPage() {
             Sign in to your deal room
           </h1>
           <p className="text-xs sm:text-sm text-zinc-500 font-normal leading-relaxed">
-            Experience AgreementOS from either perspective: manage approvals as
+            Experience Scope from either perspective: manage approvals as
             the <strong className="font-semibold text-zinc-700">Brand</strong>, or submit work and track rights as the{" "}
             <strong className="font-semibold text-zinc-700">Creator</strong>.
           </p>
@@ -290,7 +290,7 @@ export default function LoginPage() {
       {/* Footer */}
       <div className="max-w-4xl w-full mx-auto text-center pt-4 border-t border-zinc-200/60">
         <p className="text-xs text-zinc-400 font-light">
-          AgreementOS · The Operating System for Creator Partnerships & Commercial Rights
+          Scope · The Operating System for Creator Partnerships & Commercial Rights
         </p>
       </div>
     </div>

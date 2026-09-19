@@ -87,7 +87,7 @@ export default function SourceEvidenceModal({
             <div>
               <p className="font-semibold mb-0.5">Agreement Term Active</p>
               <p className="text-emerald-950/80 font-normal leading-relaxed">
-                This term serves as the baseline agreement constraint. When messages, uploads, or revision requests deviate from this boundary, AgreementOS automatically flags a scope adjustment notice.
+                This term serves as the baseline agreement constraint. When messages, uploads, or revision requests deviate from this boundary, Scope automatically flags a scope adjustment notice.
               </p>
             </div>
           </div>

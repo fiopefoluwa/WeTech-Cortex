@@ -31,7 +31,7 @@ from routers import (
 )
 
 app = FastAPI(
-    title="AgreementOS API",
+    title="Scope API",
     description="The Operating System for Creator Partnerships, Real-Time Scope Auditing, and Commercial Rights",
     version="2.0.0",
 )
@@ -228,7 +228,7 @@ def on_startup():
 def root():
     return {
         "status": "healthy",
-        "service": "AgreementOS Backend API",
+        "service": "Scope Backend API",
         "version": "2.0.0",
         "docs_url": "/docs",
     }

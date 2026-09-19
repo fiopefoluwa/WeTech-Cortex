@@ -86,7 +86,7 @@ export default function Sidebar({
           </div>
           <div>
             <h1 className="text-[16px] font-bold tracking-tight text-white font-serif">
-              AgreementOS
+              Scope
             </h1>
             <p className="text-[11px] text-zinc-500 font-light font-sans -mt-0.5">work made clear</p>
           </div>
@@ -122,11 +122,10 @@ export default function Sidebar({
               key={item.label}
               href={fullPath}
               onClick={() => setMobileMenuOpen(false)}
-              className={`flex items-center gap-3 px-3 py-2 rounded-xl text-[13px] transition-all duration-150 ${
-                isActive
+              className={`flex items-center gap-3 px-3 py-2 rounded-xl text-[13px] transition-all duration-150 ${isActive
                   ? "bg-gradient-to-r from-[#A05AFF] to-[#9E58FF] text-white shadow-xs font-medium"
                   : "text-zinc-400 hover:text-white hover:bg-white/[0.06] font-normal"
-              }`}
+                }`}
             >
               {IconComponent && (
                 <IconComponent

@@ -21,7 +21,7 @@ async function safeRequest<T>(
   // Retrieve auth token from localStorage if available
   let authHeader = {};
   if (typeof window !== "undefined") {
-    const token = localStorage.getItem("agreementos_token");
+    const token = localStorage.getItem("Scope_token");
     if (token) {
       authHeader = { Authorization: `Bearer ${token}` };
     }

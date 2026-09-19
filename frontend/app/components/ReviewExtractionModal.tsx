@@ -259,7 +259,7 @@ export default function ReviewExtractionModal({
               Upload PDF Agreement
             </h2>
             <p className="text-xs text-zinc-500 font-normal mb-4 leading-relaxed">
-              Upload your agreement PDF or contract file. AgreementOS will parse the text and extract structured terms.
+              Upload your agreement PDF or contract file. Scope will parse the text and extract structured terms.
             </p>
 
             <form onSubmit={handleFileUpload} className="space-y-4">

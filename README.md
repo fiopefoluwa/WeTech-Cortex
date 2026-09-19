@@ -1,4 +1,4 @@
-# AgreementOS
+# Scope
 
 A shared deal room platform for brands and creators to manage commercial agreements, communication, deliverable approvals, rights tracking, and milestone disbursements.
 
@@ -13,7 +13,7 @@ In creator marketing and commercial partnerships, collaborations are frequently 
 3. **Contract Disconnect**: Once an agreement is signed, key terms (deliverables, usage rights, exclusivity windows, revision caps) are locked in a PDF and rarely referenced during day-to-day execution.
 4. **Delayed Approvals and Disbursements**: Deliverables and invoices are reviewed across disconnected tools, slowing down milestone sign-offs and payouts.
 
-AgreementOS solves this by converting static legal agreements into an active workspace. Key contract terms are extracted into living cards, conversations are audited in real time to catch scope adjustments before work is done, commercial usage is actively tracked with license extension options, and deliverables are tied directly to milestone releases.
+Scope solves this by converting static legal agreements into an active workspace. Key contract terms are extracted into living cards, conversations are audited in real time to catch scope adjustments before work is done, commercial usage is actively tracked with license extension options, and deliverables are tied directly to milestone releases.
 
 ---
 

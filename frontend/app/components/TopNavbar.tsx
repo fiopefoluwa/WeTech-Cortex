@@ -79,13 +79,12 @@ export default function TopNavbar() {
             className="hidden lg:inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-normal bg-zinc-100/80 hover:bg-zinc-200/70 text-zinc-600 border border-zinc-200/60 transition-colors cursor-pointer"
           >
             <span
-              className={`w-2 h-2 rounded-full ${
-                backendStatus === "connected"
+              className={`w-2 h-2 rounded-full ${backendStatus === "connected"
                   ? "bg-[#1BCFB4]"
                   : backendStatus === "checking"
-                  ? "bg-[#4BCBEB]"
-                  : "bg-zinc-400"
-              }`}
+                    ? "bg-[#4BCBEB]"
+                    : "bg-zinc-400"
+                }`}
             />
             <span>{backendStatus === "connected" ? "Live Server" : "Connecting..."}</span>
           </button>
@@ -100,11 +99,10 @@ export default function TopNavbar() {
                 <button
                   type="button"
                   onClick={switchRole}
-                  className={`flex items-center gap-2 sm:gap-2.5 px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl text-xs transition-all cursor-pointer ${
-                    role === "brand"
+                  className={`flex items-center gap-2 sm:gap-2.5 px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl text-xs transition-all cursor-pointer ${role === "brand"
                       ? "bg-white text-zinc-900 shadow-xs font-medium"
                       : "bg-white text-zinc-900 shadow-xs font-medium"
-                  }`}
+                    }`}
                   title="Click to switch perspective between Brand and Creator"
                 >
                   <span className="hidden md:inline text-zinc-500 font-normal">Viewing as:</span>
@@ -112,11 +110,10 @@ export default function TopNavbar() {
                     {user.name}
                   </strong>
                   <span
-                    className={`text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-md ${
-                      role === "brand"
+                    className={`text-[10px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-md ${role === "brand"
                         ? "bg-[#A05AFF]/15 text-[#702AE0]"
                         : "bg-[#1BCFB4]/15 text-[#0A7B69]"
-                    }`}
+                      }`}
                   >
                     {role}
                   </span>
@@ -159,11 +156,10 @@ export default function TopNavbar() {
                       <button
                         type="button"
                         onClick={() => handleLoginAs("brand")}
-                        className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs text-left cursor-pointer transition-colors ${
-                          role === "brand"
+                        className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs text-left cursor-pointer transition-colors ${role === "brand"
                             ? "bg-[#A05AFF]/15 text-[#702AE0] font-semibold"
                             : "text-zinc-700 hover:bg-zinc-50 font-normal"
-                        }`}
+                          }`}
                       >
                         <div className="flex items-center gap-2">
                           <Building2 size={13} className="text-[#A05AFF]" />
@@ -175,11 +171,10 @@ export default function TopNavbar() {
                       <button
                         type="button"
                         onClick={() => handleLoginAs("creator")}
-                        className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs text-left cursor-pointer transition-colors ${
-                          role === "creator"
+                        className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs text-left cursor-pointer transition-colors ${role === "creator"
                             ? "bg-[#1BCFB4]/15 text-[#0A7B69] font-semibold"
                             : "text-zinc-700 hover:bg-zinc-50 font-normal"
-                        }`}
+                          }`}
                       >
                         <div className="flex items-center gap-2">
                           <User size={13} className="text-[#1BCFB4]" />
@@ -252,7 +247,7 @@ export default function TopNavbar() {
                     <ShieldCheck size={13} />
                   </div>
                   <h2 className="text-lg font-bold text-zinc-900 tracking-tight font-serif">
-                    AgreementOS
+                    Scope
                   </h2>
                 </div>
                 <p className="text-xs text-zinc-500 font-normal">
@@ -340,7 +335,7 @@ export default function TopNavbar() {
 
             {/* Modal footer */}
             <div className="px-6 py-3.5 bg-zinc-50 border-t border-zinc-100 flex items-center justify-between text-[11px] text-zinc-400">
-              <span className="font-light">AgreementOS · Work Made Clear</span>
+              <span className="font-light">Scope · Work Made Clear</span>
               <Link
                 href="/login"
                 onClick={() => setIsLoginOpen(false)}
