@@ -4,3 +4,9 @@ sqlmodel
 psycopg2-binary
 python-dotenv
 google-genai
+pypdf
+python-multipart
+passlib[bcrypt]
+bcrypt
+pyjwt
+websockets

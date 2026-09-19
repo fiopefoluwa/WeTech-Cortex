@@ -1,4 +1,3 @@
-@"
 # Environment variables
 .env
 .env.*
@@ -16,6 +15,9 @@ build/
 venv/
 env/
 ENV/
+*.db
+*.sqlite
+*.sqlite3
 
 # Node / frontend
 node_modules/
@@ -37,4 +39,3 @@ uploads/
 
 # Logs
 *.log
-"@ | Set-Content -Path ".gitignore"
